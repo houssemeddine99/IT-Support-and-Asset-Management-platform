@@ -1,10 +1,10 @@
 <%@ Page Title="Overview" Language="VB" MasterPageFile="~/Site.Master" AutoEventWireup="false" CodeBehind="Default.aspx.vb" Inherits="ITSupportAssetManagement.Web.HomePage" %>
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
-    <div class="page-heading">
-        <div><p class="eyebrow">Monday, 31 August</p><h1>Good morning, Houssem</h1><p>Here is what is happening across your IT operations today.</p></div>
-        <div class="heading-actions"><button class="button button-secondary" type="button"><i class="bi bi-download"></i> Export report</button><a class="button button-primary" href="Tickets/Create.aspx"><i class="bi bi-plus-lg"></i> New ticket</a></div>
-    </div>
-    <section class="metric-grid" aria-label="Key metrics">
+    <section class="dashboard-hero">
+        <div class="hero-copy"><p class="hero-kicker"><span></span> Operations command center</p><h1>Good morning, Houssem</h1><p>Monitor requests, equipment, and technical interventions across the Siliana site.</p><div class="hero-meta"><span><i class="bi bi-geo-alt"></i> Siliana plant</span><span><i class="bi bi-calendar3"></i> Monday, 31 August</span><span><i class="bi bi-clock"></i> Morning shift</span></div></div>
+        <div class="hero-side"><div class="live-status"><span class="live-dot"></span><div><small>Platform status</small><strong>All systems operational</strong></div></div><div class="heading-actions"><button class="button hero-secondary" type="button"><i class="bi bi-download"></i> Export report</button><a class="button hero-primary" href="Tickets/Create.aspx"><i class="bi bi-plus-lg"></i> New ticket</a></div></div>
+    </section>
+    <section class="metric-grid dashboard-metrics" aria-label="Key metrics">
         <article class="metric-card metric-blue"><div class="metric-top"><span class="metric-icon"><i class="bi bi-inbox"></i></span><span class="trend up"><i class="bi bi-arrow-up-right"></i> 8.2%</span></div><p>Open tickets</p><div class="metric-value">24</div><small>12 require attention</small></article>
         <article class="metric-card metric-violet"><div class="metric-top"><span class="metric-icon"><i class="bi bi-laptop"></i></span><span class="trend up"><i class="bi bi-arrow-up-right"></i> 2.4%</span></div><p>Total assets</p><div class="metric-value">312</div><small>286 currently assigned</small></article>
         <article class="metric-card metric-orange"><div class="metric-top"><span class="metric-icon"><i class="bi bi-tools"></i></span><span class="trend down"><i class="bi bi-arrow-down-right"></i> 1.6%</span></div><p>In maintenance</p><div class="metric-value">8</div><small>3 overdue interventions</small></article>
