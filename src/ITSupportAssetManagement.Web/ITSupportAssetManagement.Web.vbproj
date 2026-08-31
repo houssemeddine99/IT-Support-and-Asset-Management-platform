@@ -60,6 +60,7 @@
     <Content Include="Maintenance\Create.aspx" />
     <Content Include="Maintenance\Details.aspx" />
     <Content Include="Maintenance\List.aspx" />
+    <Content Include="Reports\Overview.aspx" />
     <Content Include="SetupAdmin.aspx" />
     <Content Include="Team\Create.aspx" />
     <Content Include="Team\List.aspx" />
@@ -85,6 +86,7 @@
     <Compile Include="Data\Database.vb" />
     <Compile Include="Data\DashboardRepository.vb" />
     <Compile Include="Data\MaintenanceRepository.vb" />
+    <Compile Include="Data\ReportRepository.vb" />
     <Compile Include="Data\AssetRepository.vb" />
     <Compile Include="Data\UserRepository.vb" />
     <Compile Include="Data\TicketRepository.vb" />
@@ -103,6 +105,7 @@
     <Compile Include="Models\DashboardSnapshot.vb" />
     <Compile Include="Models\MaintenanceDetails.vb" />
     <Compile Include="Models\MaintenanceListItem.vb" />
+    <Compile Include="Models\OperationsReport.vb" />
     <Compile Include="Models\TicketListItem.vb" />
     <Compile Include="Models\TeamMemberListItem.vb" />
     <Compile Include="Models\TicketDetails.vb" />
@@ -142,6 +145,8 @@
     <Compile Include="Team\Create.aspx.designer.vb"><DependentUpon>Create.aspx</DependentUpon></Compile>
     <Compile Include="Team\List.aspx.vb"><DependentUpon>List.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
     <Compile Include="Team\List.aspx.designer.vb"><DependentUpon>List.aspx</DependentUpon></Compile>
+    <Compile Include="Reports\Overview.aspx.vb"><DependentUpon>Overview.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
+    <Compile Include="Reports\Overview.aspx.designer.vb"><DependentUpon>Overview.aspx</DependentUpon></Compile>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">17.0</VisualStudioVersion>
