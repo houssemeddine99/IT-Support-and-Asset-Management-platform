@@ -33,10 +33,25 @@
     <Reference Include="System.Web.Extensions" />
   </ItemGroup>
   <ItemGroup>
+    <Import Include="Microsoft.VisualBasic" />
+    <Import Include="System" />
+    <Import Include="System.Collections" />
+    <Import Include="System.Collections.Generic" />
+    <Import Include="System.Data" />
+    <Import Include="System.Diagnostics" />
+    <Import Include="System.Linq" />
+    <Import Include="System.Web" />
+    <Import Include="System.Web.UI" />
+    <Import Include="System.Web.UI.WebControls" />
+  </ItemGroup>
+  <ItemGroup>
     <Content Include="Default.aspx" />
     <Content Include="Login.aspx" />
     <Content Include="Logout.aspx" />
     <Content Include="SetupAdmin.aspx" />
+    <Content Include="Tickets\Create.aspx" />
+    <Content Include="Tickets\Details.aspx" />
+    <Content Include="Tickets\List.aspx" />
     <Content Include="Global.asax" />
     <Content Include="Site.Master" />
     <Content Include="Content\site.css" />
@@ -55,6 +70,7 @@
     </Compile>
     <Compile Include="Data\Database.vb" />
     <Compile Include="Data\UserRepository.vb" />
+    <Compile Include="Data\TicketRepository.vb" />
     <Compile Include="Global.asax.vb">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -63,6 +79,9 @@
     <Compile Include="Logout.aspx.vb"><DependentUpon>Logout.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
     <Compile Include="Logout.aspx.designer.vb"><DependentUpon>Logout.aspx</DependentUpon></Compile>
     <Compile Include="Models\AuthenticatedUser.vb" />
+    <Compile Include="Models\LookupOption.vb" />
+    <Compile Include="Models\TicketListItem.vb" />
+    <Compile Include="Models\TicketDetails.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="Site.Master.vb">
       <DependentUpon>Site.Master</DependentUpon>
@@ -75,6 +94,12 @@
     <Compile Include="Security\PasswordHasher.vb" />
     <Compile Include="SetupAdmin.aspx.vb"><DependentUpon>SetupAdmin.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
     <Compile Include="SetupAdmin.aspx.designer.vb"><DependentUpon>SetupAdmin.aspx</DependentUpon></Compile>
+    <Compile Include="Tickets\Create.aspx.vb"><DependentUpon>Create.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
+    <Compile Include="Tickets\Create.aspx.designer.vb"><DependentUpon>Create.aspx</DependentUpon></Compile>
+    <Compile Include="Tickets\Details.aspx.vb"><DependentUpon>Details.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
+    <Compile Include="Tickets\Details.aspx.designer.vb"><DependentUpon>Details.aspx</DependentUpon></Compile>
+    <Compile Include="Tickets\List.aspx.vb"><DependentUpon>List.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
+    <Compile Include="Tickets\List.aspx.designer.vb"><DependentUpon>List.aspx</DependentUpon></Compile>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">17.0</VisualStudioVersion>

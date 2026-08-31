@@ -2,7 +2,7 @@
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-heading">
         <div><p class="eyebrow">Monday, 31 August</p><h1>Good morning, Houssem</h1><p>Here is what is happening across your IT operations today.</p></div>
-        <div class="heading-actions"><button class="button button-secondary" type="button"><i class="bi bi-download"></i> Export report</button><button class="button button-primary" type="button"><i class="bi bi-plus-lg"></i> New ticket</button></div>
+        <div class="heading-actions"><button class="button button-secondary" type="button"><i class="bi bi-download"></i> Export report</button><a class="button button-primary" href="Tickets/Create.aspx"><i class="bi bi-plus-lg"></i> New ticket</a></div>
     </div>
     <section class="metric-grid" aria-label="Key metrics">
         <article class="metric-card metric-blue"><div class="metric-top"><span class="metric-icon"><i class="bi bi-inbox"></i></span><span class="trend up"><i class="bi bi-arrow-up-right"></i> 8.2%</span></div><p>Open tickets</p><div class="metric-value">24</div><small>12 require attention</small></article>
@@ -38,4 +38,3 @@
         </section>
     </div>
 </asp:Content>
-
