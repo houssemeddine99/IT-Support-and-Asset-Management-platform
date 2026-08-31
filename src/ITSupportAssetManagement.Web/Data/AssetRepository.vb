@@ -107,6 +107,76 @@ Namespace Data
             End Using
         End Function
 
+        Public Function GetAssignmentHistory(assetId As Integer) As List(Of AssetAssignmentHistoryItem)
+            Const sql = "SELECT u.FirstName + N' ' + u.LastName AS UserName, assigner.FirstName + N' ' + assigner.LastName AS AssignedByName, aa.AssignedAtUtc, aa.ReturnedAtUtc, aa.AssignmentNotes, aa.ReturnNotes " &
+                        "FROM dbo.AssetAssignments aa INNER JOIN dbo.Users u ON u.UserId = aa.UserId INNER JOIN dbo.Users assigner ON assigner.UserId = aa.AssignedByUserId " &
+                        "WHERE aa.AssetId = @AssetId ORDER BY aa.AssignedAtUtc DESC;"
+            Dim results As New List(Of AssetAssignmentHistoryItem)()
+            Using connection = Database.CreateConnection(), command = New SqlCommand(sql, connection)
+                command.Parameters.Add("@AssetId", SqlDbType.Int).Value = assetId
+                connection.Open()
+                Using reader = command.ExecuteReader()
+                    While reader.Read()
+                        results.Add(New AssetAssignmentHistoryItem With {
+                            .UserName = reader.GetString(reader.GetOrdinal("UserName")), .AssignedByName = reader.GetString(reader.GetOrdinal("AssignedByName")),
+                            .AssignedAtUtc = reader.GetDateTime(reader.GetOrdinal("AssignedAtUtc")), .ReturnedAtUtc = ReadNullableDate(reader, "ReturnedAtUtc"),
+                            .AssignmentNotes = ReadNullableString(reader, "AssignmentNotes"), .ReturnNotes = ReadNullableString(reader, "ReturnNotes")
+                        })
+                    End While
+                End Using
+            End Using
+            Return results
+        End Function
+
+        Public Sub AssignAsset(assetId As Integer, userId As Integer, assignedByUserId As Integer, notes As String)
+            Using connection = Database.CreateConnection()
+                connection.Open()
+                Using transaction = connection.BeginTransaction(IsolationLevel.Serializable)
+                    Try
+                        Const validateSql = "SELECT Status FROM dbo.Assets WITH (UPDLOCK, HOLDLOCK) WHERE AssetId = @AssetId;"
+                        Using validate = New SqlCommand(validateSql, connection, transaction)
+                            validate.Parameters.Add("@AssetId", SqlDbType.Int).Value = assetId
+                            Dim status = Convert.ToString(validate.ExecuteScalar())
+                            If String.IsNullOrEmpty(status) Then Throw New InvalidOperationException("The asset was not found.")
+                            If status <> "Available" Then Throw New InvalidOperationException("Only an available asset can be assigned.")
+                        End Using
+                        Const insertSql = "INSERT dbo.AssetAssignments (AssetId, UserId, AssignedByUserId, AssignmentNotes) VALUES (@AssetId, @UserId, @AssignedByUserId, @Notes); UPDATE dbo.Assets SET Status = N'Assigned', UpdatedAtUtc = SYSUTCDATETIME() WHERE AssetId = @AssetId;"
+                        Using command = New SqlCommand(insertSql, connection, transaction)
+                            command.Parameters.Add("@AssetId", SqlDbType.Int).Value = assetId
+                            command.Parameters.Add("@UserId", SqlDbType.Int).Value = userId
+                            command.Parameters.Add("@AssignedByUserId", SqlDbType.Int).Value = assignedByUserId
+                            AddNullableString(command, "@Notes", 500, notes)
+                            command.ExecuteNonQuery()
+                        End Using
+                        transaction.Commit()
+                    Catch
+                        transaction.Rollback() : Throw
+                    End Try
+                End Using
+            End Using
+        End Sub
+
+        Public Sub ReturnAsset(assetId As Integer, returnNotes As String)
+            Using connection = Database.CreateConnection()
+                connection.Open()
+                Using transaction = connection.BeginTransaction(IsolationLevel.Serializable)
+                    Try
+                        Const updateSql = "UPDATE dbo.AssetAssignments SET ReturnedAtUtc = SYSUTCDATETIME(), ReturnNotes = @ReturnNotes WHERE AssetId = @AssetId AND ReturnedAtUtc IS NULL; " &
+                                          "IF @@ROWCOUNT = 0 THROW 51000, 'No active assignment was found.', 1; " &
+                                          "UPDATE dbo.Assets SET Status = N'Available', UpdatedAtUtc = SYSUTCDATETIME() WHERE AssetId = @AssetId;"
+                        Using command = New SqlCommand(updateSql, connection, transaction)
+                            command.Parameters.Add("@AssetId", SqlDbType.Int).Value = assetId
+                            AddNullableString(command, "@ReturnNotes", 500, returnNotes)
+                            command.ExecuteNonQuery()
+                        End Using
+                        transaction.Commit()
+                    Catch
+                        transaction.Rollback() : Throw
+                    End Try
+                End Using
+            End Using
+        End Sub
+
         Private Shared Sub AddNullableString(command As SqlCommand, name As String, length As Integer, value As String)
             command.Parameters.Add(name, SqlDbType.NVarChar, length).Value = If(String.IsNullOrWhiteSpace(value), CType(DBNull.Value, Object), value.Trim())
         End Sub

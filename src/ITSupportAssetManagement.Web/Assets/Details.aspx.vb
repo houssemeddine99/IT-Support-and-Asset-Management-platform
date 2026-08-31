@@ -24,11 +24,33 @@ Public Partial Class AssetDetailsPage
                 Dim names = asset.AssignedToName.Split(" "c) : AssignedInitials.Text = Server.HtmlEncode(String.Join(String.Empty, names.Where(Function(value) value.Length > 0).Take(2).Select(Function(value) value.Substring(0, 1))).ToUpperInvariant())
                 AssignedPanel.Visible = True
             End If
-            SuccessPanel.Visible = Request.QueryString("created") = "1" : DetailsPanel.Visible = True
+            Dim history = New AssetRepository().GetAssignmentHistory(assetId)
+            HistoryRepeater.DataSource = history : HistoryRepeater.DataBind() : NoHistoryPanel.Visible = history.Count = 0
+            Dim roleName = Convert.ToString(Session("RoleName")), canManage = roleName = "Administrator" OrElse roleName = "ITManager"
+            AssignLink.NavigateUrl = "Assign.aspx?id=" & assetId.ToString() : AssignLink.Visible = canManage AndAlso asset.Status = "Available"
+            ReturnButton.Visible = canManage AndAlso asset.Status = "Assigned"
+            If Request.QueryString("created") = "1" Then SuccessMessage.Text = "The asset was registered successfully." : SuccessPanel.Visible = True
+            If Request.QueryString("assigned") = "1" Then SuccessMessage.Text = "The asset assignment was recorded successfully." : SuccessPanel.Visible = True
+            If Request.QueryString("returned") = "1" Then SuccessMessage.Text = "The asset return was recorded successfully." : SuccessPanel.Visible = True
+            DetailsPanel.Visible = True
         Catch ex As SqlException
             ShowNotFound()
         End Try
     End Sub
+    Protected Sub ReturnButton_Click(sender As Object, e As EventArgs) Handles ReturnButton.Click
+        Dim roleName = Convert.ToString(Session("RoleName")), assetId As Integer
+        If (roleName <> "Administrator" AndAlso roleName <> "ITManager") OrElse Not Integer.TryParse(Request.QueryString("id"), assetId) Then Return
+        Try
+            Dim repository As New AssetRepository()
+            repository.ReturnAsset(assetId, "Returned through the asset details workflow.")
+            Response.Redirect("~/Assets/Details.aspx?id=" & assetId.ToString() & "&returned=1", False)
+        Catch ex As Exception When TypeOf ex Is SqlException OrElse TypeOf ex Is InvalidOperationException
+            ErrorMessage.Text = "The return could not be completed. Refresh the asset and try again." : ErrorPanel.Visible = True
+        End Try
+    End Sub
+    Protected Function DisplayHistoryNotes(value As Object) As String
+        Dim text = Convert.ToString(value) : Return If(String.IsNullOrWhiteSpace(text), "No assignment notes", text)
+    End Function
     Private Function DisplayValue(value As String) As String
         Return Server.HtmlEncode(If(String.IsNullOrWhiteSpace(value), "Not recorded", value))
     End Function
@@ -39,4 +61,3 @@ Public Partial Class AssetDetailsPage
         NotFoundPanel.Visible = True : DetailsPanel.Visible = False
     End Sub
 End Class
-

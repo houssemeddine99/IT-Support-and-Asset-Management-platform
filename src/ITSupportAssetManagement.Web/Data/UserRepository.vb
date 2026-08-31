@@ -65,6 +65,19 @@ Namespace Data
                 End Using
             End Using
         End Function
+
+        Public Function GetActiveUsers() As List(Of LookupOption)
+            Const sql = "SELECT UserId, FirstName + N' ' + LastName + N' — ' + COALESCE(Department, N'No department') AS Label FROM dbo.Users WHERE IsActive = 1 ORDER BY FirstName, LastName;"
+            Dim results As New List(Of LookupOption)()
+            Using connection = Database.CreateConnection(), command = New SqlCommand(sql, connection)
+                connection.Open()
+                Using reader = command.ExecuteReader()
+                    While reader.Read()
+                        results.Add(New LookupOption With {.Id = reader.GetInt32(0), .Label = reader.GetString(1)})
+                    End While
+                End Using
+            End Using
+            Return results
+        End Function
     End Class
 End Namespace
-

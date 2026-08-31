@@ -4,6 +4,9 @@ Partial Public Class AssetDetailsPage
     Protected WithEvents NotFoundPanel As Global.System.Web.UI.WebControls.Panel
     Protected WithEvents DetailsPanel As Global.System.Web.UI.WebControls.Panel
     Protected WithEvents SuccessPanel As Global.System.Web.UI.WebControls.Panel
+    Protected WithEvents SuccessMessage As Global.System.Web.UI.WebControls.Literal
+    Protected WithEvents ErrorPanel As Global.System.Web.UI.WebControls.Panel
+    Protected WithEvents ErrorMessage As Global.System.Web.UI.WebControls.Literal
     Protected WithEvents AssetName As Global.System.Web.UI.WebControls.Literal
     Protected WithEvents StatusBadge As Global.System.Web.UI.WebControls.Label
     Protected WithEvents AssetTag As Global.System.Web.UI.WebControls.Literal
@@ -21,4 +24,8 @@ Partial Public Class AssetDetailsPage
     Protected WithEvents AssignedName As Global.System.Web.UI.WebControls.Literal
     Protected WithEvents AssignedDate As Global.System.Web.UI.WebControls.Literal
     Protected WithEvents UnassignedPanel As Global.System.Web.UI.WebControls.Panel
+    Protected WithEvents AssignLink As Global.System.Web.UI.WebControls.HyperLink
+    Protected WithEvents ReturnButton As Global.System.Web.UI.WebControls.Button
+    Protected WithEvents HistoryRepeater As Global.System.Web.UI.WebControls.Repeater
+    Protected WithEvents NoHistoryPanel As Global.System.Web.UI.WebControls.Panel
 End Class

@@ -52,6 +52,7 @@
   <ItemGroup>
     <Content Include="Default.aspx" />
     <Content Include="Assets\Create.aspx" />
+    <Content Include="Assets\Assign.aspx" />
     <Content Include="Assets\Details.aspx" />
     <Content Include="Assets\List.aspx" />
     <Content Include="Login.aspx" />
@@ -89,6 +90,7 @@
     <Compile Include="Logout.aspx.designer.vb"><DependentUpon>Logout.aspx</DependentUpon></Compile>
     <Compile Include="Models\AuthenticatedUser.vb" />
     <Compile Include="Models\AssetDetails.vb" />
+    <Compile Include="Models\AssetAssignmentHistoryItem.vb" />
     <Compile Include="Models\AssetListItem.vb" />
     <Compile Include="Models\LookupOption.vb" />
     <Compile Include="Models\TicketListItem.vb" />
@@ -107,6 +109,8 @@
     <Compile Include="SetupAdmin.aspx.designer.vb"><DependentUpon>SetupAdmin.aspx</DependentUpon></Compile>
     <Compile Include="Assets\Create.aspx.vb"><DependentUpon>Create.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
     <Compile Include="Assets\Create.aspx.designer.vb"><DependentUpon>Create.aspx</DependentUpon></Compile>
+    <Compile Include="Assets\Assign.aspx.vb"><DependentUpon>Assign.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
+    <Compile Include="Assets\Assign.aspx.designer.vb"><DependentUpon>Assign.aspx</DependentUpon></Compile>
     <Compile Include="Assets\Details.aspx.vb"><DependentUpon>Details.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
     <Compile Include="Assets\Details.aspx.designer.vb"><DependentUpon>Details.aspx</DependentUpon></Compile>
     <Compile Include="Assets\List.aspx.vb"><DependentUpon>List.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>

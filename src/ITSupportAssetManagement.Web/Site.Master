@@ -5,7 +5,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#0b1220" />
-    <title><%: Page.Title %> - NexaDesk</title>
+    <title><%: Page.Title %> - Siliana IT Hub</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet" />
@@ -17,7 +17,7 @@
     <form id="MainForm" runat="server">
         <div class="app-shell">
             <aside class="sidebar" id="AppSidebar" aria-label="Main navigation">
-                <div class="brand"><span class="brand-mark"><i class="bi bi-command"></i></span><span class="brand-copy"><strong>NexaDesk</strong><small>IT Operations</small></span></div>
+                <div class="brand"><span class="brand-mark"><i class="bi bi-command"></i></span><span class="brand-copy"><strong>Siliana IT Hub</strong><small>DRÄXLMAIER Operations</small></span></div>
                 <nav class="sidebar-nav">
                     <p class="nav-caption">Workspace</p>
                     <a class="nav-link active" href="<%= ResolveUrl("~/Default.aspx") %>"><i class="bi bi-grid-1x2-fill"></i><span>Overview</span></a>
