@@ -13,3 +13,4 @@
 @media(max-width:470px){.notification-button{display:none}.search-box input::placeholder{color:transparent}.metric-grid{grid-template-columns:1fr}.page-heading h1{font-size:23px}.button{padding:0 11px}}
 @media(prefers-reduced-motion:reduce){*,*:before,*:after{scroll-behavior:auto!important;transition:none!important}}
 .health-ring{position:relative}
+.logout-link{display:grid;width:30px;height:30px;place-items:center;border-radius:8px;color:var(--muted);font-size:13px}.logout-link:hover{background:#f2f4f8;color:var(--red)}
