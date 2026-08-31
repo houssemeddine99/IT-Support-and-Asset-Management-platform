@@ -113,6 +113,47 @@ Namespace Data
             End Using
         End Function
 
+        Public Function GetAssignableTechnicians() As List(Of LookupOption)
+            Const sql = "SELECT u.UserId,u.FirstName+N' '+u.LastName+N' - '+r.Name Label FROM dbo.Users u INNER JOIN dbo.Roles r ON r.RoleId=u.RoleId WHERE u.IsActive=1 AND r.Name IN(N'Administrator',N'ITManager',N'Technician') ORDER BY u.FirstName,u.LastName;"
+            Return ReadOptions(sql, "UserId", "Label")
+        End Function
+
+        Public Function GetComments(ticketId As Integer, includeInternal As Boolean) As List(Of TicketCommentItem)
+            Const sql = "SELECT u.FirstName+N' '+u.LastName AuthorName,c.Body,c.IsInternal,c.CreatedAtUtc FROM dbo.TicketComments c INNER JOIN dbo.Users u ON u.UserId=c.AuthorUserId WHERE c.TicketId=@TicketId AND (@IncludeInternal=1 OR c.IsInternal=0) ORDER BY c.CreatedAtUtc;"
+            Dim results As New List(Of TicketCommentItem)()
+            Using connection = Database.CreateConnection(), command As New SqlCommand(sql, connection)
+                command.Parameters.Add("@TicketId", SqlDbType.Int).Value = ticketId : command.Parameters.Add("@IncludeInternal", SqlDbType.Bit).Value = includeInternal : connection.Open()
+                Using reader = command.ExecuteReader()
+                    While reader.Read() : results.Add(New TicketCommentItem With {.AuthorName = reader.GetString(0), .Body = reader.GetString(1), .IsInternal = reader.GetBoolean(2), .CreatedAtUtc = reader.GetDateTime(3)}) : End While
+                End Using
+            End Using
+            Return results
+        End Function
+
+        Public Sub AssignTicket(ticketId As Integer, technicianUserId As Integer)
+            Const sql = "UPDATE dbo.Tickets SET AssignedToUserId=@UserId,Status=CASE WHEN Status=N'Open' THEN N'Assigned' ELSE Status END,UpdatedAtUtc=SYSUTCDATETIME() WHERE TicketId=@TicketId; IF @@ROWCOUNT=0 THROW 51000,'Ticket not found.',1;"
+            Using connection = Database.CreateConnection(), command As New SqlCommand(sql, connection)
+                command.Parameters.Add("@TicketId", SqlDbType.Int).Value = ticketId : command.Parameters.Add("@UserId", SqlDbType.Int).Value = technicianUserId : connection.Open() : command.ExecuteNonQuery()
+            End Using
+        End Sub
+
+        Public Sub ChangeStatus(ticketId As Integer, status As String)
+            Dim allowed = New String() {"Open", "Assigned", "InProgress", "Waiting", "Resolved", "Closed", "Cancelled"}
+            If Not allowed.Contains(status) Then Throw New InvalidOperationException("Invalid ticket status.")
+            Const sql = "UPDATE dbo.Tickets SET Status=@Status,UpdatedAtUtc=SYSUTCDATETIME(),ResolvedAtUtc=CASE WHEN @Status=N'Resolved' THEN COALESCE(ResolvedAtUtc,SYSUTCDATETIME()) WHEN @Status IN(N'Open',N'Assigned',N'InProgress',N'Waiting') THEN NULL ELSE ResolvedAtUtc END,ClosedAtUtc=CASE WHEN @Status=N'Closed' THEN SYSUTCDATETIME() ELSE ClosedAtUtc END WHERE TicketId=@TicketId; IF @@ROWCOUNT=0 THROW 51000,'Ticket not found.',1;"
+            Using connection = Database.CreateConnection(), command As New SqlCommand(sql, connection)
+                command.Parameters.Add("@TicketId", SqlDbType.Int).Value = ticketId : command.Parameters.Add("@Status", SqlDbType.NVarChar, 30).Value = status : connection.Open() : command.ExecuteNonQuery()
+            End Using
+        End Sub
+
+        Public Sub AddComment(ticketId As Integer, authorUserId As Integer, body As String, isInternal As Boolean)
+            If String.IsNullOrWhiteSpace(body) Then Throw New InvalidOperationException("Write a comment before posting.")
+            Const sql = "INSERT dbo.TicketComments(TicketId,AuthorUserId,Body,IsInternal) VALUES(@TicketId,@UserId,@Body,@Internal);"
+            Using connection = Database.CreateConnection(), command As New SqlCommand(sql, connection)
+                command.Parameters.Add("@TicketId", SqlDbType.Int).Value = ticketId : command.Parameters.Add("@UserId", SqlDbType.Int).Value = authorUserId : command.Parameters.Add("@Body", SqlDbType.NVarChar, -1).Value = body.Trim() : command.Parameters.Add("@Internal", SqlDbType.Bit).Value = isInternal : connection.Open() : command.ExecuteNonQuery()
+            End Using
+        End Sub
+
         Private Shared Function ReadOptions(sql As String, idColumn As String, labelColumn As String) As List(Of LookupOption)
             Dim results As New List(Of LookupOption)()
             Using connection = Database.CreateConnection(), command = New SqlCommand(sql, connection)

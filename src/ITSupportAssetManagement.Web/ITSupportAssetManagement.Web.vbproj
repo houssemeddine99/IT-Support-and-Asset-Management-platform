@@ -110,6 +110,7 @@
     <Compile Include="Models\TicketListItem.vb" />
     <Compile Include="Models\TeamMemberListItem.vb" />
     <Compile Include="Models\TicketDetails.vb" />
+    <Compile Include="Models\TicketCommentItem.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="Site.Master.vb">
       <DependentUpon>Site.Master</DependentUpon>
