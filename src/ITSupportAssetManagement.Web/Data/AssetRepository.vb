@@ -128,6 +128,24 @@ Namespace Data
             Return results
         End Function
 
+        Public Function GetMaintenanceHistory(assetId As Integer) As List(Of MaintenanceListItem)
+            Const sql = "SELECT m.MaintenanceInterventionId,m.AssetId,a.AssetTag,LTRIM(RTRIM(COALESCE(a.Manufacturer + N' ',N'') + a.Model)) AS AssetName,m.InterventionType,m.Status,m.ScheduledAtUtc,CASE WHEN u.UserId IS NULL THEN NULL ELSE u.FirstName + N' ' + u.LastName END AS TechnicianName FROM dbo.MaintenanceInterventions m INNER JOIN dbo.Assets a ON a.AssetId=m.AssetId LEFT JOIN dbo.Users u ON u.UserId=m.TechnicianUserId WHERE m.AssetId=@AssetId ORDER BY COALESCE(m.ScheduledAtUtc,m.CreatedAtUtc) DESC;"
+            Dim results As New List(Of MaintenanceListItem)()
+            Using connection = Database.CreateConnection(), command As New SqlCommand(sql, connection)
+                command.Parameters.Add("@AssetId", SqlDbType.Int).Value = assetId : connection.Open()
+                Using reader = command.ExecuteReader()
+                    While reader.Read()
+                        results.Add(New MaintenanceListItem With {
+                            .MaintenanceInterventionId = reader.GetInt32(reader.GetOrdinal("MaintenanceInterventionId")), .AssetId = assetId,
+                            .AssetTag = reader.GetString(reader.GetOrdinal("AssetTag")), .AssetName = reader.GetString(reader.GetOrdinal("AssetName")),
+                            .InterventionType = reader.GetString(reader.GetOrdinal("InterventionType")), .Status = reader.GetString(reader.GetOrdinal("Status")),
+                            .TechnicianName = ReadNullableString(reader, "TechnicianName"), .ScheduledAtUtc = ReadNullableDate(reader, "ScheduledAtUtc")})
+                    End While
+                End Using
+            End Using
+            Return results
+        End Function
+
         Public Sub AssignAsset(assetId As Integer, userId As Integer, assignedByUserId As Integer, notes As String)
             Using connection = Database.CreateConnection()
                 connection.Open()

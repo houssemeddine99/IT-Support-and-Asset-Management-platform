@@ -26,8 +26,13 @@ Public Partial Class AssetDetailsPage
             End If
             Dim history = New AssetRepository().GetAssignmentHistory(assetId)
             HistoryRepeater.DataSource = history : HistoryRepeater.DataBind() : NoHistoryPanel.Visible = history.Count = 0
+            Dim maintenanceHistory = New AssetRepository().GetMaintenanceHistory(assetId)
+            MaintenanceRepeater.DataSource = maintenanceHistory : MaintenanceRepeater.DataBind() : NoMaintenancePanel.Visible = maintenanceHistory.Count = 0
             Dim roleName = Convert.ToString(Session("RoleName")), canManage = roleName = "Administrator" OrElse roleName = "ITManager"
             AssignLink.NavigateUrl = "Assign.aspx?id=" & assetId.ToString() : AssignLink.Visible = canManage AndAlso asset.Status = "Available"
+            ScheduleMaintenanceLink.NavigateUrl = "~/Maintenance/Create.aspx?assetId=" & assetId.ToString()
+            ScheduleMaintenanceLink.Visible = canManage OrElse roleName = "Technician"
+            MaintenanceListLink.NavigateUrl = "~/Maintenance/List.aspx?search=" & Server.UrlEncode(asset.AssetTag)
             ReturnButton.Visible = canManage AndAlso asset.Status = "Assigned"
             If Request.QueryString("created") = "1" Then SuccessMessage.Text = "The asset was registered successfully." : SuccessPanel.Visible = True
             If Request.QueryString("assigned") = "1" Then SuccessMessage.Text = "The asset assignment was recorded successfully." : SuccessPanel.Visible = True
@@ -50,6 +55,13 @@ Public Partial Class AssetDetailsPage
     End Sub
     Protected Function DisplayHistoryNotes(value As Object) As String
         Dim text = Convert.ToString(value) : Return If(String.IsNullOrWhiteSpace(text), "No assignment notes", text)
+    End Function
+    Protected Function DisplayMaintenanceMeta(technicianValue As Object, scheduledValue As Object) As String
+        Dim technician = Convert.ToString(technicianValue)
+        If String.IsNullOrWhiteSpace(technician) Then technician = "Unassigned"
+        Dim schedule = "Date not scheduled"
+        If scheduledValue IsNot Nothing AndAlso scheduledValue IsNot DBNull.Value Then schedule = Convert.ToDateTime(scheduledValue).ToLocalTime().ToString("dd MMM yyyy, HH:mm")
+        Return technician & " · " & schedule
     End Function
     Private Function DisplayValue(value As String) As String
         Return Server.HtmlEncode(If(String.IsNullOrWhiteSpace(value), "Not recorded", value))

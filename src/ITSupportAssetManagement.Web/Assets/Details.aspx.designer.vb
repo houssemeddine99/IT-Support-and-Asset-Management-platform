@@ -24,8 +24,12 @@ Partial Public Class AssetDetailsPage
     Protected WithEvents AssignedName As Global.System.Web.UI.WebControls.Literal
     Protected WithEvents AssignedDate As Global.System.Web.UI.WebControls.Literal
     Protected WithEvents UnassignedPanel As Global.System.Web.UI.WebControls.Panel
+    Protected WithEvents ScheduleMaintenanceLink As Global.System.Web.UI.WebControls.HyperLink
     Protected WithEvents AssignLink As Global.System.Web.UI.WebControls.HyperLink
     Protected WithEvents ReturnButton As Global.System.Web.UI.WebControls.Button
     Protected WithEvents HistoryRepeater As Global.System.Web.UI.WebControls.Repeater
     Protected WithEvents NoHistoryPanel As Global.System.Web.UI.WebControls.Panel
+    Protected WithEvents MaintenanceListLink As Global.System.Web.UI.WebControls.HyperLink
+    Protected WithEvents MaintenanceRepeater As Global.System.Web.UI.WebControls.Repeater
+    Protected WithEvents NoMaintenancePanel As Global.System.Web.UI.WebControls.Panel
 End Class
