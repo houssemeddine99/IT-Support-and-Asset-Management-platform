@@ -79,5 +79,51 @@ Namespace Data
             End Using
             Return results
         End Function
+
+        Public Function GetTeamMembers(search As String, roleName As String) As List(Of TeamMemberListItem)
+            Dim sql = "SELECT u.UserId,u.EmployeeCode,u.FirstName,u.LastName,u.Email,u.Department,u.PhoneNumber,u.IsActive,r.Name RoleName FROM dbo.Users u INNER JOIN dbo.Roles r ON r.RoleId=u.RoleId WHERE 1=1 "
+            Dim results As New List(Of TeamMemberListItem)()
+            Using connection = Database.CreateConnection(), command As New SqlCommand()
+                command.Connection = connection
+                If Not String.IsNullOrWhiteSpace(search) Then sql &= "AND (u.FirstName+N' '+u.LastName LIKE @Search OR u.Email LIKE @Search OR u.EmployeeCode LIKE @Search OR u.Department LIKE @Search) " : command.Parameters.Add("@Search", SqlDbType.NVarChar, 160).Value = "%" & search.Trim() & "%"
+                If Not String.IsNullOrWhiteSpace(roleName) Then sql &= "AND r.Name=@Role " : command.Parameters.Add("@Role", SqlDbType.NVarChar, 50).Value = roleName
+                command.CommandText = sql & "ORDER BY u.IsActive DESC,u.FirstName,u.LastName;" : connection.Open()
+                Using reader = command.ExecuteReader()
+                    While reader.Read()
+                        results.Add(New TeamMemberListItem With {.UserId = reader.GetInt32(0), .EmployeeCode = ReadString(reader, 1), .FirstName = reader.GetString(2), .LastName = reader.GetString(3), .Email = reader.GetString(4), .Department = ReadString(reader, 5), .PhoneNumber = ReadString(reader, 6), .IsActive = reader.GetBoolean(7), .RoleName = reader.GetString(8)})
+                    End While
+                End Using
+            End Using
+            Return results
+        End Function
+
+        Public Function GetRoles() As List(Of LookupOption)
+            Dim results As New List(Of LookupOption)()
+            Using connection = Database.CreateConnection(), command As New SqlCommand("SELECT RoleId,Name FROM dbo.Roles ORDER BY CASE Name WHEN N'Administrator' THEN 1 WHEN N'ITManager' THEN 2 WHEN N'Technician' THEN 3 ELSE 4 END;", connection)
+                connection.Open()
+                Using reader = command.ExecuteReader()
+                    While reader.Read() : results.Add(New LookupOption With {.Id = reader.GetInt32(0), .Label = reader.GetString(1)}) : End While
+                End Using
+            End Using
+            Return results
+        End Function
+
+        Public Function CreateUser(roleId As Integer, employeeCode As String, firstName As String, lastName As String, email As String, passwordHash As String, department As String, phoneNumber As String) As Integer
+            Const sql = "INSERT dbo.Users(RoleId,EmployeeCode,FirstName,LastName,Email,PasswordHash,Department,PhoneNumber) OUTPUT INSERTED.UserId VALUES(@RoleId,@Code,@FirstName,@LastName,@Email,@Hash,@Department,@Phone);"
+            Using connection = Database.CreateConnection(), command As New SqlCommand(sql, connection)
+                command.Parameters.Add("@RoleId", SqlDbType.Int).Value = roleId : AddString(command, "@Code", 30, employeeCode)
+                command.Parameters.Add("@FirstName", SqlDbType.NVarChar, 80).Value = firstName.Trim() : command.Parameters.Add("@LastName", SqlDbType.NVarChar, 80).Value = lastName.Trim()
+                command.Parameters.Add("@Email", SqlDbType.NVarChar, 254).Value = email.Trim().ToLowerInvariant() : command.Parameters.Add("@Hash", SqlDbType.NVarChar, 500).Value = passwordHash
+                AddString(command, "@Department", 100, department) : AddString(command, "@Phone", 30, phoneNumber)
+                connection.Open() : Return Convert.ToInt32(command.ExecuteScalar())
+            End Using
+        End Function
+
+        Private Shared Sub AddString(command As SqlCommand, name As String, length As Integer, value As String)
+            command.Parameters.Add(name, SqlDbType.NVarChar, length).Value = If(String.IsNullOrWhiteSpace(value), CType(DBNull.Value, Object), value.Trim())
+        End Sub
+        Private Shared Function ReadString(reader As SqlDataReader, ordinal As Integer) As String
+            Return If(reader.IsDBNull(ordinal), String.Empty, reader.GetString(ordinal))
+        End Function
     End Class
 End Namespace

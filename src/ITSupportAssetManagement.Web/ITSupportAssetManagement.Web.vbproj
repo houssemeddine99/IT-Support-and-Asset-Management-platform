@@ -61,6 +61,8 @@
     <Content Include="Maintenance\Details.aspx" />
     <Content Include="Maintenance\List.aspx" />
     <Content Include="SetupAdmin.aspx" />
+    <Content Include="Team\Create.aspx" />
+    <Content Include="Team\List.aspx" />
     <Content Include="Tickets\Create.aspx" />
     <Content Include="Tickets\Details.aspx" />
     <Content Include="Tickets\List.aspx" />
@@ -102,6 +104,7 @@
     <Compile Include="Models\MaintenanceDetails.vb" />
     <Compile Include="Models\MaintenanceListItem.vb" />
     <Compile Include="Models\TicketListItem.vb" />
+    <Compile Include="Models\TeamMemberListItem.vb" />
     <Compile Include="Models\TicketDetails.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="Site.Master.vb">
@@ -135,6 +138,10 @@
     <Compile Include="Maintenance\Details.aspx.designer.vb"><DependentUpon>Details.aspx</DependentUpon></Compile>
     <Compile Include="Maintenance\List.aspx.vb"><DependentUpon>List.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
     <Compile Include="Maintenance\List.aspx.designer.vb"><DependentUpon>List.aspx</DependentUpon></Compile>
+    <Compile Include="Team\Create.aspx.vb"><DependentUpon>Create.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
+    <Compile Include="Team\Create.aspx.designer.vb"><DependentUpon>Create.aspx</DependentUpon></Compile>
+    <Compile Include="Team\List.aspx.vb"><DependentUpon>List.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
+    <Compile Include="Team\List.aspx.designer.vb"><DependentUpon>List.aspx</DependentUpon></Compile>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">17.0</VisualStudioVersion>
