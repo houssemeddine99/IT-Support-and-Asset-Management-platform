@@ -1,0 +1,4 @@
+Public Partial Class SiteMaster
+    Inherits System.Web.UI.MasterPage
+End Class
+

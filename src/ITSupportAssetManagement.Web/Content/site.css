@@ -1,0 +1,35 @@
+:root {
+    --brand-navy: #102a43;
+    --brand-blue: #0d6efd;
+    --page-bg: #f4f7fb;
+}
+
+body {
+    background: var(--page-bg);
+    color: var(--brand-navy);
+}
+
+.hero-panel {
+    background: linear-gradient(135deg, #ffffff 0%, #e7f1ff 100%);
+    border: 1px solid #d8e5f4;
+    box-shadow: 0 1rem 3rem rgba(16, 42, 67, 0.08);
+}
+
+.module-card {
+    height: 100%;
+    padding: 1.5rem;
+    background: #ffffff;
+    border: 1px solid #d8e5f4;
+    border-radius: 1rem;
+}
+
+.module-card h2 {
+    font-size: 1.2rem;
+    font-weight: 700;
+}
+
+.module-card p {
+    margin-bottom: 0;
+    color: #52667a;
+}
+
