@@ -81,6 +81,7 @@
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
     <Compile Include="Data\Database.vb" />
+    <Compile Include="Data\DashboardRepository.vb" />
     <Compile Include="Data\MaintenanceRepository.vb" />
     <Compile Include="Data\AssetRepository.vb" />
     <Compile Include="Data\UserRepository.vb" />
@@ -97,6 +98,7 @@
     <Compile Include="Models\AssetAssignmentHistoryItem.vb" />
     <Compile Include="Models\AssetListItem.vb" />
     <Compile Include="Models\LookupOption.vb" />
+    <Compile Include="Models\DashboardSnapshot.vb" />
     <Compile Include="Models\MaintenanceDetails.vb" />
     <Compile Include="Models\MaintenanceListItem.vb" />
     <Compile Include="Models\TicketListItem.vb" />
