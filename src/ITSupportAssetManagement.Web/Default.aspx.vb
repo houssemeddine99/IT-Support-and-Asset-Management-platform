@@ -34,6 +34,7 @@ Public Partial Class HomePage
         Dim healthyEnd = snapshot.HealthyPercentage, attentionEnd = healthyEnd + snapshot.AttentionPercentage
         HealthRing.Attributes("style") = String.Format(Globalization.CultureInfo.InvariantCulture, "background:conic-gradient(var(--green) 0 {0}%,var(--orange) {0}% {1}%,var(--red) {1}% 100%)", healthyEnd, attentionEnd)
         PriorityTicketRepeater.DataSource = snapshot.PriorityTickets : PriorityTicketRepeater.DataBind() : NoPriorityTicketsPanel.Visible = snapshot.PriorityTickets.Count = 0
+        ActivityRepeater.DataSource = snapshot.RecentActivities : ActivityRepeater.DataBind() : NoActivityPanel.Visible = snapshot.RecentActivities.Count = 0
     End Sub
 
     Protected Function FormatAge(value As Object) As String

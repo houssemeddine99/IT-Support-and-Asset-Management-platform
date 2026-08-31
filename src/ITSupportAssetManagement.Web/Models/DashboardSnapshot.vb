@@ -10,6 +10,7 @@ Namespace Models
         Public Property HealthyAssets As Integer
         Public Property NeedsAttentionAssets As Integer
         Public Property PriorityTickets As New List(Of DashboardPriorityTicket)()
+        Public Property RecentActivities As New List(Of DashboardActivityItem)()
 
         Public ReadOnly Property HealthyPercentage As Decimal
             Get
@@ -24,6 +25,27 @@ Namespace Models
         Public ReadOnly Property MaintenancePercentage As Decimal
             Get
                 Return If(TotalAssets = 0, 0D, Math.Round(AssetsInMaintenance * 100D / TotalAssets, 1))
+            End Get
+        End Property
+    End Class
+
+    Public NotInheritable Class DashboardActivityItem
+        Public Property ActivityType As String
+        Public Property Title As String
+        Public Property Detail As String
+        Public Property EventAtUtc As DateTime
+        Public ReadOnly Property IconClass As String
+            Get
+                If ActivityType = "Ticket" Then Return "bi bi-inbox"
+                If ActivityType = "Asset" Then Return "bi bi-laptop"
+                Return "bi bi-wrench"
+            End Get
+        End Property
+        Public ReadOnly Property ColorClass As String
+            Get
+                If ActivityType = "Ticket" Then Return "info"
+                If ActivityType = "Asset" Then Return "success"
+                Return "warning"
             End Get
         End Property
     End Class

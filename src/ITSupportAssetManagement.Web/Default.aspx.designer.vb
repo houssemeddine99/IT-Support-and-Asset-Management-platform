@@ -22,4 +22,6 @@ Partial Public Class HomePage
     Protected WithEvents AttentionLegendPercentage As Global.System.Web.UI.WebControls.Literal
     Protected WithEvents MaintenanceLegendCount As Global.System.Web.UI.WebControls.Literal
     Protected WithEvents MaintenanceLegendPercentage As Global.System.Web.UI.WebControls.Literal
+    Protected WithEvents ActivityRepeater As Global.System.Web.UI.WebControls.Repeater
+    Protected WithEvents NoActivityPanel As Global.System.Web.UI.WebControls.Panel
 End Class
