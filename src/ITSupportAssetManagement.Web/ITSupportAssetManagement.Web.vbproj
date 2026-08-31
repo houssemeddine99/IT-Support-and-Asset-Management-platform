@@ -14,6 +14,7 @@
     <OptionStrict>On</OptionStrict>
     <OptionInfer>On</OptionInfer>
     <UseIISExpress>true</UseIISExpress>
+    <DisableFastUpToDateCheck>true</DisableFastUpToDateCheck>
     <IISExpressSSLPort>44372</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication>enabled</IISExpressAnonymousAuthentication>
     <IISExpressWindowsAuthentication>disabled</IISExpressWindowsAuthentication>
@@ -153,6 +154,9 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
+  <Target Name="StartSilianaLocalDb" BeforeTargets="Build">
+    <Exec Command="&quot;$(ProgramW6432)\Microsoft SQL Server\170\Tools\Binn\SqlLocalDB.exe&quot; start SilianaIT" IgnoreExitCode="true" />
+  </Target>
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="Exists('$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets')" />
   <ProjectExtensions>
     <VisualStudio>
