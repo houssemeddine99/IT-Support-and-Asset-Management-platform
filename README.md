@@ -31,3 +31,6 @@ A VB.NET web platform that combines three project ideas:
 
 Open `ITSupportAssetManagement.sln` in Visual Studio. Database configuration and the initial schema will be added in the next development step.
 
+## Database
+
+Create a SQL Server database named `ITSupportAssetManagement`, then execute `database/001_initial_schema.sql`. See `database/README.md` for the complete setup instructions.

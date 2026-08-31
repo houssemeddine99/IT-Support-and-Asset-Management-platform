@@ -5,9 +5,5 @@
          connectionString="Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=ITSupportAssetManagement;Integrated Security=True;TrustServerCertificate=True"
          providerName="System.Data.SqlClient" />
   </connectionStrings>
-  <system.web>
-    <compilation debug="true" strict="true" explicit="true" targetFramework="4.8" />
-    <httpRuntime targetFramework="4.8" />
-    <pages controlRenderingCompatibilityVersion="4.0" />
-  </system.web>
 </configuration>
+
