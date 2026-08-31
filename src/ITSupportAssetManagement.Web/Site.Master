@@ -23,7 +23,7 @@
                     <a class="nav-link active" href="<%= ResolveUrl("~/Default.aspx") %>"><i class="bi bi-grid-1x2-fill"></i><span>Overview</span></a>
                     <a class="nav-link" href="<%= ResolveUrl("~/Tickets/List.aspx") %>"><i class="bi bi-inbox"></i><span>Tickets</span><em>12</em></a>
                     <a class="nav-link" href="<%= ResolveUrl("~/Assets/List.aspx") %>"><i class="bi bi-laptop"></i><span>Assets</span></a>
-                    <a class="nav-link" href="#maintenance"><i class="bi bi-tools"></i><span>Maintenance</span><em class="warning">3</em></a>
+                    <a class="nav-link" href="<%= ResolveUrl("~/Maintenance/List.aspx") %>"><i class="bi bi-tools"></i><span>Maintenance</span></a>
                     <p class="nav-caption">Management</p>
                     <a class="nav-link" href="#team"><i class="bi bi-people"></i><span>Team</span></a>
                     <a class="nav-link" href="#reports"><i class="bi bi-bar-chart"></i><span>Reports</span></a>

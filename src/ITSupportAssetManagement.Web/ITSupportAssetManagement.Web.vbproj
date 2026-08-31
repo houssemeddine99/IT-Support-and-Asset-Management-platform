@@ -57,6 +57,9 @@
     <Content Include="Assets\List.aspx" />
     <Content Include="Login.aspx" />
     <Content Include="Logout.aspx" />
+    <Content Include="Maintenance\Create.aspx" />
+    <Content Include="Maintenance\Details.aspx" />
+    <Content Include="Maintenance\List.aspx" />
     <Content Include="SetupAdmin.aspx" />
     <Content Include="Tickets\Create.aspx" />
     <Content Include="Tickets\Details.aspx" />
@@ -78,6 +81,7 @@
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
     <Compile Include="Data\Database.vb" />
+    <Compile Include="Data\MaintenanceRepository.vb" />
     <Compile Include="Data\AssetRepository.vb" />
     <Compile Include="Data\UserRepository.vb" />
     <Compile Include="Data\TicketRepository.vb" />
@@ -93,6 +97,8 @@
     <Compile Include="Models\AssetAssignmentHistoryItem.vb" />
     <Compile Include="Models\AssetListItem.vb" />
     <Compile Include="Models\LookupOption.vb" />
+    <Compile Include="Models\MaintenanceDetails.vb" />
+    <Compile Include="Models\MaintenanceListItem.vb" />
     <Compile Include="Models\TicketListItem.vb" />
     <Compile Include="Models\TicketDetails.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
@@ -121,6 +127,12 @@
     <Compile Include="Tickets\Details.aspx.designer.vb"><DependentUpon>Details.aspx</DependentUpon></Compile>
     <Compile Include="Tickets\List.aspx.vb"><DependentUpon>List.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
     <Compile Include="Tickets\List.aspx.designer.vb"><DependentUpon>List.aspx</DependentUpon></Compile>
+    <Compile Include="Maintenance\Create.aspx.vb"><DependentUpon>Create.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
+    <Compile Include="Maintenance\Create.aspx.designer.vb"><DependentUpon>Create.aspx</DependentUpon></Compile>
+    <Compile Include="Maintenance\Details.aspx.vb"><DependentUpon>Details.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
+    <Compile Include="Maintenance\Details.aspx.designer.vb"><DependentUpon>Details.aspx</DependentUpon></Compile>
+    <Compile Include="Maintenance\List.aspx.vb"><DependentUpon>List.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
+    <Compile Include="Maintenance\List.aspx.designer.vb"><DependentUpon>List.aspx</DependentUpon></Compile>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">17.0</VisualStudioVersion>
