@@ -21,7 +21,7 @@
                 <tbody>
                     <asp:Repeater ID="TicketRepeater" runat="server"><ItemTemplate>
                         <tr>
-                            <td><a class="ticket-cell" href='<%# "Details.aspx?id=" & Convert.ToString(Eval("TicketId")) %>'><strong><%#: Eval("Title") %></strong><span><%#: Eval("TicketNumber") %><%# If(String.IsNullOrWhiteSpace(Convert.ToString(Eval("AssetTag"))), "", " · " & Server.HtmlEncode(Convert.ToString(Eval("AssetTag")))) %></span></a></td>
+                            <td><a class="ticket-cell" href='<%# "Details.aspx?id=" & Convert.ToString(Eval("TicketId")) %>'><strong><%#: Eval("Title") %></strong><span><%#: Eval("TicketNumber") %><%# If(String.IsNullOrWhiteSpace(Convert.ToString(Eval("AssetTag"))), "", " &middot; " & Server.HtmlEncode(Convert.ToString(Eval("AssetTag")))) %></span></a></td>
                             <td><span class="category-chip"><i class="bi bi-tag"></i><%#: Eval("CategoryName") %></span></td>
                             <td><span class='<%# Eval("PriorityCssClass") %>'><%#: Eval("Priority") %></span></td>
                             <td><span class='<%# Eval("StatusCssClass") %>'><i></i><%#: Convert.ToString(Eval("Status")).Replace("InProgress", "In progress") %></span></td>

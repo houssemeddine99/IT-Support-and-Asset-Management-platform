@@ -17,7 +17,7 @@
                 <div class="form-section"><div class="section-number">2</div><div class="section-copy"><h2>Classification</h2><p>Help us route the request.</p></div></div>
                 <div class="form-body">
                     <div class="field"><label for="CategoryInput">Category <em>Required</em></label><asp:DropDownList ID="CategoryInput" runat="server" /><asp:RequiredFieldValidator ID="CategoryRequired" runat="server" ControlToValidate="CategoryInput" InitialValue="" ErrorMessage="Select a category." CssClass="field-error" Display="Dynamic" /></div>
-                    <div class="field"><label for="PriorityInput">Priority</label><asp:DropDownList ID="PriorityInput" runat="server"><asp:ListItem Value="Low">Low — Minor inconvenience</asp:ListItem><asp:ListItem Value="Medium" Selected="True">Medium — Work is affected</asp:ListItem><asp:ListItem Value="High">High — Work is blocked</asp:ListItem><asp:ListItem Value="Critical">Critical — Major outage</asp:ListItem></asp:DropDownList></div>
+                    <div class="field"><label for="PriorityInput">Priority</label><asp:DropDownList ID="PriorityInput" runat="server"><asp:ListItem Value="Low">Low - Minor inconvenience</asp:ListItem><asp:ListItem Value="Medium" Selected="True">Medium - Work is affected</asp:ListItem><asp:ListItem Value="High">High - Work is blocked</asp:ListItem><asp:ListItem Value="Critical">Critical - Major outage</asp:ListItem></asp:DropDownList></div>
                     <div class="field"><label for="AssetInput">Related asset <span>Optional</span></label><asp:DropDownList ID="AssetInput" runat="server" /></div>
                 </div>
             </section>
@@ -29,4 +29,3 @@
         (function(){var box=document.getElementById('<%= DescriptionInput.ClientID %>'),count=document.getElementById('DescriptionCount');if(!box||!count)return;function update(){count.textContent=box.value.length+' / 5000';}box.addEventListener('input',update);update();}());
     </script>
 </asp:Content>
-
