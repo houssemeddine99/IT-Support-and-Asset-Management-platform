@@ -36,6 +36,7 @@
     <Content Include="Global.asax" />
     <Content Include="Site.Master" />
     <Content Include="Content\site.css" />
+    <Content Include="Scripts\app.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
