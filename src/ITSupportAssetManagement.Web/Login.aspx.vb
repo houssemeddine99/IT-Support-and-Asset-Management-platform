@@ -12,7 +12,16 @@ Public Partial Class LoginPage
             Try
                 If Not New UserRepository().AnyUsers() Then Response.Redirect("~/SetupAdmin.aspx", False)
             Catch ex As SqlException
-                ShowError("The database is not ready. Create it and run the initial migration first.")
+                SqlConnection.ClearAllPools()
+                Try
+                    If Not New UserRepository().AnyUsers() Then Response.Redirect("~/SetupAdmin.aspx", False)
+                Catch retryException As SqlException
+                    If Request.IsLocal Then
+                        ShowError(String.Format("Database connection failed ({0}): {1}", retryException.Number, retryException.Message))
+                    Else
+                        ShowError("The database service is temporarily unavailable. Contact IT support.")
+                    End If
+                End Try
             End Try
         End If
     End Sub
