@@ -21,6 +21,7 @@ Partial Public Class TicketDetailsPage
     Protected WithEvents InternalInput As Global.System.Web.UI.WebControls.CheckBox
     Protected WithEvents CommentButton As Global.System.Web.UI.WebControls.Button
     Protected WithEvents StatusBadge As Global.System.Web.UI.WebControls.Label
+    Protected WithEvents SlaBadge As Global.System.Web.UI.WebControls.Label
     Protected WithEvents CategoryName As Global.System.Web.UI.WebControls.Literal
     Protected WithEvents AssetLabel As Global.System.Web.UI.WebControls.Literal
     Protected WithEvents AssignedToName As Global.System.Web.UI.WebControls.Literal

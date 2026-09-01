@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
-    <link href="<%= ResolveUrl("~/Content/site.css?v=20260901.4") %>" rel="stylesheet" />
+    <link href="<%= ResolveUrl("~/Content/site.css?v=20260901.5") %>" rel="stylesheet" />
     <asp:ContentPlaceHolder ID="HeadContent" runat="server" />
 </head>
 <body>
@@ -36,7 +36,7 @@
                 <header class="topbar">
                     <button class="icon-button menu-button" id="MenuButton" type="button" aria-label="Open navigation" aria-expanded="false"><i class="bi bi-list"></i></button>
                     <div class="search-box"><i class="bi bi-search"></i><input type="search" placeholder="Search tickets, assets, or people..." aria-label="Search" /><kbd>&#8984; K</kbd></div>
-                    <div class="topbar-actions"><button class="icon-button notification-button" type="button" aria-label="Notifications"><i class="bi bi-bell"></i><span></span></button><div class="profile"><span class="avatar"><asp:Literal ID="UserInitials" runat="server" /></span><span class="profile-copy"><strong><asp:Literal ID="UserDisplayName" runat="server" /></strong><small><asp:Literal ID="UserRole" runat="server" /></small></span><a class="logout-link" href="<%= ResolveUrl("~/Logout.aspx") %>" title="Sign out" aria-label="Sign out"><i class="bi bi-box-arrow-right"></i></a></div></div>
+                    <div class="topbar-actions"><a class="icon-button notification-button" href="<%= ResolveUrl("~/Tickets/List.aspx?sla=attention") %>" aria-label="Tickets needing SLA attention"><i class="bi bi-bell"></i><asp:Label ID="NotificationCount" runat="server" CssClass="notification-count" Visible="false" /></a><div class="profile"><span class="avatar"><asp:Literal ID="UserInitials" runat="server" /></span><span class="profile-copy"><strong><asp:Literal ID="UserDisplayName" runat="server" /></strong><small><asp:Literal ID="UserRole" runat="server" /></small></span><a class="logout-link" href="<%= ResolveUrl("~/Logout.aspx") %>" title="Sign out" aria-label="Sign out"><i class="bi bi-box-arrow-right"></i></a></div></div>
                 </header>
                 <main class="content-area"><asp:ContentPlaceHolder ID="MainContent" runat="server" /></main>
             </div>

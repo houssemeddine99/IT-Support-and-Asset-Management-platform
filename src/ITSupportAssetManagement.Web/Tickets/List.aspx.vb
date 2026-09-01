@@ -7,6 +7,7 @@ Public Partial Class TicketListPage
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         If Not IsPostBack Then
+            If SlaFilter.Items.FindByValue(Request.QueryString("sla")) IsNot Nothing Then SlaFilter.SelectedValue = Request.QueryString("sla")
             If Not String.IsNullOrWhiteSpace(Request.QueryString("created")) Then
                 CreatedTicketNumber.Text = Server.HtmlEncode(Request.QueryString("created"))
                 SuccessPanel.Visible = True
@@ -25,7 +26,7 @@ Public Partial Class TicketListPage
             If Not Integer.TryParse(Convert.ToString(Session("UserId")), userId) Then Response.Redirect("~/Login.aspx", False) : Return
             Dim roleName = Convert.ToString(Session("RoleName"))
             Dim canViewAll = roleName = "Administrator" OrElse roleName = "ITManager" OrElse roleName = "Technician"
-            Dim rows = _tickets.GetTickets(SearchInput.Text, StatusFilter.SelectedValue, PriorityFilter.SelectedValue, userId, canViewAll)
+            Dim rows = _tickets.GetTickets(SearchInput.Text, StatusFilter.SelectedValue, PriorityFilter.SelectedValue, SlaFilter.SelectedValue, userId, canViewAll)
             TicketRepeater.DataSource = rows
             TicketRepeater.DataBind()
             ResultCount.Text = rows.Count.ToString()

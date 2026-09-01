@@ -5,12 +5,12 @@ Imports ITSupportAssetManagement.Web.Models
 
 Namespace Data
     Public NotInheritable Class TicketRepository
-        Public Function GetTickets(search As String, status As String, priority As String, viewerUserId As Integer, canViewAll As Boolean) As List(Of TicketListItem)
+        Public Function GetTickets(search As String, status As String, priority As String, sla As String, viewerUserId As Integer, canViewAll As Boolean) As List(Of TicketListItem)
             Dim sql = New StringBuilder(
                 "SELECT t.TicketId, t.TicketNumber, t.Title, t.Priority, t.Status, c.Name AS CategoryName, " &
                 "requester.FirstName + N' ' + requester.LastName AS RequestedByName, " &
                 "CASE WHEN assignee.UserId IS NULL THEN NULL ELSE assignee.FirstName + N' ' + assignee.LastName END AS AssignedToName, " &
-                "a.AssetTag, t.CreatedAtUtc " &
+                "a.AssetTag, t.CreatedAtUtc, t.DueAtUtc " &
                 "FROM dbo.Tickets t " &
                 "INNER JOIN dbo.TicketCategories c ON c.TicketCategoryId = t.TicketCategoryId " &
                 "INNER JOIN dbo.Users requester ON requester.UserId = t.RequestedByUserId " &
@@ -36,6 +36,8 @@ Namespace Data
                     sql.Append("AND t.Priority = @Priority ")
                     command.Parameters.Add("@Priority", SqlDbType.NVarChar, 20).Value = priority
                 End If
+                If sla = "overdue" Then sql.Append("AND t.DueAtUtc<SYSUTCDATETIME() AND t.Status NOT IN(N'Resolved',N'Closed',N'Cancelled') ")
+                If sla = "attention" Then sql.Append("AND t.DueAtUtc<=DATEADD(HOUR,4,SYSUTCDATETIME()) AND t.Status NOT IN(N'Resolved',N'Closed',N'Cancelled') ")
                 sql.Append("ORDER BY CASE t.Priority WHEN N'Critical' THEN 1 WHEN N'High' THEN 2 WHEN N'Medium' THEN 3 ELSE 4 END, t.CreatedAtUtc DESC;")
                 command.CommandText = sql.ToString()
                 connection.Open()
@@ -51,7 +53,7 @@ Namespace Data
                             .RequestedByName = reader.GetString(reader.GetOrdinal("RequestedByName")),
                             .AssignedToName = ReadNullableString(reader, "AssignedToName"),
                             .AssetTag = ReadNullableString(reader, "AssetTag"),
-                            .CreatedAtUtc = reader.GetDateTime(reader.GetOrdinal("CreatedAtUtc"))
+                            .CreatedAtUtc = reader.GetDateTime(reader.GetOrdinal("CreatedAtUtc")), .DueAtUtc = ReadNullableDate(reader, "DueAtUtc")
                         })
                     End While
                 End Using
@@ -99,8 +101,8 @@ Namespace Data
         End Function
 
         Public Function CreateTicket(categoryId As Integer, assetId As Integer?, requestedByUserId As Integer, title As String, description As String, priority As String) As String
-            Const sql = "INSERT dbo.Tickets (TicketCategoryId, AssetId, RequestedByUserId, Title, Description, Priority) " &
-                        "OUTPUT INSERTED.TicketNumber VALUES (@CategoryId, @AssetId, @RequestedByUserId, @Title, @Description, @Priority);"
+            Const sql = "INSERT dbo.Tickets (TicketCategoryId, AssetId, RequestedByUserId, Title, Description, Priority, DueAtUtc) " &
+                        "OUTPUT INSERTED.TicketNumber VALUES (@CategoryId, @AssetId, @RequestedByUserId, @Title, @Description, @Priority,DATEADD(HOUR,CASE @Priority WHEN N'Critical' THEN 4 WHEN N'High' THEN 8 WHEN N'Medium' THEN 24 ELSE 72 END,SYSUTCDATETIME()));"
             Using connection = Database.CreateConnection(), command = New SqlCommand(sql, connection)
                 command.Parameters.Add("@CategoryId", SqlDbType.Int).Value = categoryId
                 command.Parameters.Add("@AssetId", SqlDbType.Int).Value = If(assetId.HasValue, CType(assetId.Value, Object), DBNull.Value)
@@ -116,6 +118,14 @@ Namespace Data
         Public Function GetAssignableTechnicians() As List(Of LookupOption)
             Const sql = "SELECT u.UserId,u.FirstName+N' '+u.LastName+N' - '+r.Name Label FROM dbo.Users u INNER JOIN dbo.Roles r ON r.RoleId=u.RoleId WHERE u.IsActive=1 AND r.Name IN(N'Administrator',N'ITManager',N'Technician') ORDER BY u.FirstName,u.LastName;"
             Return ReadOptions(sql, "UserId", "Label")
+        End Function
+
+        Public Function GetSlaAlertCount(viewerUserId As Integer, canViewAll As Boolean) As Integer
+            Const sql = "SELECT COUNT(1) FROM dbo.Tickets WHERE DueAtUtc<=DATEADD(HOUR,4,SYSUTCDATETIME()) AND Status NOT IN(N'Resolved',N'Closed',N'Cancelled') AND (@CanViewAll=1 OR RequestedByUserId=@UserId);"
+            Using connection = Database.CreateConnection(), command As New SqlCommand(sql, connection)
+                command.Parameters.Add("@UserId", SqlDbType.Int).Value = viewerUserId : command.Parameters.Add("@CanViewAll", SqlDbType.Bit).Value = canViewAll : connection.Open()
+                Return Convert.ToInt32(command.ExecuteScalar())
+            End Using
         End Function
 
         Public Function GetComments(ticketId As Integer, includeInternal As Boolean) As List(Of TicketCommentItem)
@@ -206,6 +216,9 @@ Namespace Data
         Private Shared Function ReadNullableString(reader As SqlDataReader, columnName As String) As String
             Dim ordinal = reader.GetOrdinal(columnName)
             Return If(reader.IsDBNull(ordinal), String.Empty, reader.GetString(ordinal))
+        End Function
+        Private Shared Function ReadNullableDate(reader As SqlDataReader, columnName As String) As DateTime?
+            Dim ordinal = reader.GetOrdinal(columnName) : Return If(reader.IsDBNull(ordinal), CType(Nothing, DateTime?), reader.GetDateTime(ordinal))
         End Function
     End Class
 End Namespace

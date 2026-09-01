@@ -8,4 +8,5 @@ Partial Public Class SiteMaster
     Protected WithEvents UserInitials As Global.System.Web.UI.WebControls.Literal
     Protected WithEvents UserDisplayName As Global.System.Web.UI.WebControls.Literal
     Protected WithEvents UserRole As Global.System.Web.UI.WebControls.Literal
+    Protected WithEvents NotificationCount As Global.System.Web.UI.WebControls.Label
 End Class

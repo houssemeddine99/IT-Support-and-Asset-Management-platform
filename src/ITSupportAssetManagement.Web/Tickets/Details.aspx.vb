@@ -18,6 +18,7 @@ Public Partial Class TicketDetailsPage
             TicketTitle.Text = Server.HtmlEncode(ticket.Title) : TicketNumber.Text = Server.HtmlEncode(ticket.TicketNumber) : CreatedDate.Text = ticket.CreatedAtUtc.ToLocalTime().ToString("dd MMMM yyyy 'at' HH:mm")
             DescriptionText.Text = Server.HtmlEncode(ticket.Description).Replace(Environment.NewLine, "<br />") : PriorityBadge.Text = ticket.Priority : PriorityBadge.CssClass = "status status-" & ticket.Priority.ToLowerInvariant()
             StatusBadge.Text = ticket.Status.Replace("InProgress", "In progress") : StatusBadge.CssClass = "ticket-state state-" & ticket.Status.ToLowerInvariant()
+            SetSlaBadge(ticket.DueAtUtc, ticket.Status)
             CategoryName.Text = Server.HtmlEncode(ticket.CategoryName) : AssetLabel.Text = Server.HtmlEncode(If(String.IsNullOrWhiteSpace(ticket.AssetLabel), "No related asset", ticket.AssetLabel)) : AssignedToName.Text = Server.HtmlEncode(If(String.IsNullOrWhiteSpace(ticket.AssignedToName), "Unassigned", ticket.AssignedToName))
             RequesterName.Text = Server.HtmlEncode(ticket.RequestedByName) : RequesterEmail.Text = Server.HtmlEncode(ticket.RequestedByEmail)
             Dim names = ticket.RequestedByName.Split(" "c) : RequesterInitials.Text = Server.HtmlEncode(String.Join(String.Empty, names.Where(Function(value) value.Length > 0).Take(2).Select(Function(value) value.Substring(0, 1))).ToUpperInvariant())
@@ -91,6 +92,12 @@ Public Partial Class TicketDetailsPage
         If extension = ".xlsx" Then Return "bi bi-file-earmark-excel"
         Return "bi bi-file-earmark-text"
     End Function
+    Private Sub SetSlaBadge(dueAtUtc As DateTime?, status As String)
+        If Not dueAtUtc.HasValue OrElse status = "Resolved" OrElse status = "Closed" OrElse status = "Cancelled" Then SlaBadge.Text = "Not active" : SlaBadge.CssClass = "sla-chip neutral" : Return
+        Dim remaining = dueAtUtc.Value - DateTime.UtcNow
+        If remaining.TotalMinutes < 0 Then SlaBadge.Text = "Overdue · " & dueAtUtc.Value.ToLocalTime().ToString("dd MMM, HH:mm") : SlaBadge.CssClass = "sla-chip overdue" : Return
+        SlaBadge.Text = "Due " & dueAtUtc.Value.ToLocalTime().ToString("dd MMM, HH:mm") : SlaBadge.CssClass = If(remaining.TotalHours <= 4, "sla-chip warning", "sla-chip healthy")
+    End Sub
     Private Sub ShowError(message As String)
         ErrorMessage.Text = Server.HtmlEncode(message) : ErrorPanel.Visible = True
     End Sub
