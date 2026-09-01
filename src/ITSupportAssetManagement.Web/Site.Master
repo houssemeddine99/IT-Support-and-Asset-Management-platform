@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
-    <link href="<%= ResolveUrl("~/Content/site.css?v=20260901.9") %>" rel="stylesheet" />
+    <link href="<%= ResolveUrl("~/Content/site.css?v=20260901.10") %>" rel="stylesheet" />
     <asp:ContentPlaceHolder ID="HeadContent" runat="server" />
 </head>
 <body class="dark-workspace">
@@ -20,15 +20,15 @@
                 <a class="brand" href="<%= ResolveUrl("~/Default.aspx") %>" aria-label="DRÄXLMAIER Siliana IT Hub home"><img class="brand-logo" src="<%= ResolveUrl("~/Content/Images/draexlmaier-logo.png") %>" alt="DRÄXLMAIER" /><span class="brand-site">Siliana IT Hub</span></a>
                 <nav class="sidebar-nav">
                     <p class="nav-caption">Workspace</p>
-                    <a class="nav-link active" href="<%= ResolveUrl("~/Default.aspx") %>"><i class="bi bi-grid-1x2-fill"></i><span>Overview</span></a>
-                    <a class="nav-link" href="<%= ResolveUrl("~/Tickets/List.aspx") %>"><i class="bi bi-inbox"></i><span>Tickets</span><em>12</em></a>
-                    <a class="nav-link" href="<%= ResolveUrl("~/Assets/List.aspx") %>"><i class="bi bi-laptop"></i><span>Assets</span></a>
-                    <a class="nav-link" href="<%= ResolveUrl("~/Maintenance/List.aspx") %>"><i class="bi bi-tools"></i><span>Maintenance</span></a>
+                    <a class="<%= NavClass("overview") %>" href="<%= ResolveUrl("~/Default.aspx") %>"><i class="bi bi-grid-1x2-fill"></i><span>Overview</span></a>
+                    <a class="<%= NavClass("tickets") %>" href="<%= ResolveUrl("~/Tickets/List.aspx") %>"><i class="bi bi-inbox"></i><span>Tickets</span></a>
+                    <a class="<%= NavClass("assets") %>" href="<%= ResolveUrl("~/Assets/List.aspx") %>"><i class="bi bi-laptop"></i><span>Assets</span></a>
+                    <a class="<%= NavClass("maintenance") %>" href="<%= ResolveUrl("~/Maintenance/List.aspx") %>"><i class="bi bi-tools"></i><span>Maintenance</span></a>
                     <p class="nav-caption">Management</p>
-                    <a class="nav-link" href="<%= ResolveUrl("~/Team/List.aspx") %>"><i class="bi bi-people"></i><span>Team</span></a>
-                    <a class="nav-link" href="<%= ResolveUrl("~/Reports/Overview.aspx") %>"><i class="bi bi-bar-chart"></i><span>Reports</span></a>
-                    <a class="nav-link" href="<%= ResolveUrl("~/Audit/List.aspx") %>"><i class="bi bi-clock-history"></i><span>Audit log</span></a>
-                    <a class="nav-link" href="<%= ResolveUrl("~/Settings/Categories.aspx") %>"><i class="bi bi-gear"></i><span>Settings</span></a>
+                    <a class="<%= NavClass("team") %>" href="<%= ResolveUrl("~/Team/List.aspx") %>"><i class="bi bi-people"></i><span>Team</span></a>
+                    <a class="<%= NavClass("reports") %>" href="<%= ResolveUrl("~/Reports/Overview.aspx") %>"><i class="bi bi-bar-chart"></i><span>Reports</span></a>
+                    <a class="<%= NavClass("audit") %>" href="<%= ResolveUrl("~/Audit/List.aspx") %>"><i class="bi bi-clock-history"></i><span>Audit log</span></a>
+                    <a class="<%= NavClass("settings") %>" href="<%= ResolveUrl("~/Settings/Categories.aspx") %>"><i class="bi bi-gear"></i><span>Settings</span></a>
                 </nav>
                 <div class="sidebar-footer"><div class="storage-copy"><span>Asset capacity</span><strong>78%</strong></div><div class="progress-track"><span style="width: 78%"></span></div><small>312 of 400 assets registered</small></div>
             </aside>
@@ -36,7 +36,7 @@
             <div class="app-main">
                 <header class="topbar">
                     <button class="icon-button menu-button" id="MenuButton" type="button" aria-label="Open navigation" aria-expanded="false"><i class="bi bi-list"></i></button>
-                    <div class="search-box"><i class="bi bi-search"></i><input type="search" placeholder="Search tickets, assets, or people..." aria-label="Search" /><kbd>&#8984; K</kbd></div>
+                    <asp:Panel ID="GlobalSearchPanel" runat="server" CssClass="search-box" DefaultButton="GlobalSearchButton"><i class="bi bi-search"></i><asp:TextBox ID="GlobalSearchInput" runat="server" TextMode="Search" MaxLength="100" placeholder="Search tickets, assets, or people..." aria-label="Search" /><asp:LinkButton ID="GlobalSearchButton" runat="server" CssClass="search-submit" CausesValidation="false" aria-label="Submit search"><i class="bi bi-arrow-return-left"></i></asp:LinkButton></asp:Panel>
                     <div class="topbar-actions"><a class="icon-button notification-button" href="<%= ResolveUrl("~/Tickets/List.aspx?sla=attention") %>" aria-label="Tickets needing SLA attention"><i class="bi bi-bell"></i><asp:Label ID="NotificationCount" runat="server" CssClass="notification-count" Visible="false" /></a><div class="profile"><span class="avatar"><asp:Literal ID="UserInitials" runat="server" /></span><span class="profile-copy"><strong><asp:Literal ID="UserDisplayName" runat="server" /></strong><small><asp:Literal ID="UserRole" runat="server" /></small></span><a class="logout-link" href="<%= ResolveUrl("~/Logout.aspx") %>" title="Sign out" aria-label="Sign out"><i class="bi bi-box-arrow-right"></i></a></div></div>
                 </header>
                 <main class="content-area"><asp:ContentPlaceHolder ID="MainContent" runat="server" /></main>

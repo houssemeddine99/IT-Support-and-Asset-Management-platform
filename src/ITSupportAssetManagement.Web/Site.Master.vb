@@ -15,5 +15,19 @@ Public Partial Class SiteMaster
                 NotificationCount.Visible = False
             End Try
         End If
+        If Not IsPostBack Then GlobalSearchInput.Text = Convert.ToString(Request.QueryString("q"))
     End Sub
+
+    Protected Sub GlobalSearchButton_Click(sender As Object, e As EventArgs) Handles GlobalSearchButton.Click
+        Dim query As String = GlobalSearchInput.Text.Trim()
+        If query.Length = 0 Then Return
+        Response.Redirect(ResolveUrl("~/Search/Index.aspx?q=" & Server.UrlEncode(query)), False)
+        Context.ApplicationInstance.CompleteRequest()
+    End Sub
+
+    Protected Function NavClass(section As String) As String
+        Dim path As String = Request.AppRelativeCurrentExecutionFilePath.ToLowerInvariant()
+        Dim active As Boolean = If(section = "overview", path = "~/default.aspx", path.StartsWith("~/" & section & "/", StringComparison.Ordinal))
+        Return If(active, "nav-link active", "nav-link")
+    End Function
 End Class

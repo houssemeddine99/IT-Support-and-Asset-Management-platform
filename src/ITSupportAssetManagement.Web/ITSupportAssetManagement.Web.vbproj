@@ -64,6 +64,7 @@
     <Content Include="Maintenance\Edit.aspx" />
     <Content Include="Maintenance\List.aspx" />
     <Content Include="Reports\Overview.aspx" />
+    <Content Include="Search\Index.aspx" />
     <Content Include="SetupAdmin.aspx" />
     <Content Include="Team\Create.aspx" />
     <Content Include="Team\List.aspx" />
@@ -98,6 +99,7 @@
     <Compile Include="Data\DashboardRepository.vb" />
     <Compile Include="Data\MaintenanceRepository.vb" />
     <Compile Include="Data\ReportRepository.vb" />
+    <Compile Include="Data\SearchRepository.vb" />
     <Compile Include="Data\AssetRepository.vb" />
     <Compile Include="Data\UserRepository.vb" />
     <Compile Include="Data\TicketRepository.vb" />
@@ -120,6 +122,7 @@
     <Compile Include="Models\MaintenanceListItem.vb" />
     <Compile Include="Models\MaintenancePartItem.vb" />
     <Compile Include="Models\OperationsReport.vb" />
+    <Compile Include="Models\GlobalSearchResult.vb" />
     <Compile Include="Models\TicketListItem.vb" />
     <Compile Include="Models\TeamMemberListItem.vb" />
     <Compile Include="Models\TicketDetails.vb" />
@@ -175,6 +178,8 @@
     <Compile Include="Team\Edit.aspx.designer.vb"><DependentUpon>Edit.aspx</DependentUpon></Compile>
     <Compile Include="Reports\Overview.aspx.vb"><DependentUpon>Overview.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
     <Compile Include="Reports\Overview.aspx.designer.vb"><DependentUpon>Overview.aspx</DependentUpon></Compile>
+    <Compile Include="Search\Index.aspx.vb"><DependentUpon>Index.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
+    <Compile Include="Search\Index.aspx.designer.vb"><DependentUpon>Index.aspx</DependentUpon></Compile>
     <Compile Include="Settings\Categories.aspx.vb"><DependentUpon>Categories.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
     <Compile Include="Settings\Categories.aspx.designer.vb"><DependentUpon>Categories.aspx</DependentUpon></Compile>
     <Compile Include="Audit\List.aspx.vb"><DependentUpon>List.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
