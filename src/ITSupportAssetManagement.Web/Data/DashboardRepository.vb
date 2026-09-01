@@ -3,6 +3,19 @@ Imports ITSupportAssetManagement.Web.Models
 
 Namespace Data
     Public NotInheritable Class DashboardRepository
+        Public Function GetNavigationSummary(viewerUserId As Integer, canViewAllTickets As Boolean) As NavigationSummary
+            Const sql As String = "SELECT (SELECT COUNT(*) FROM dbo.Tickets WHERE Status NOT IN (N'Resolved',N'Closed',N'Cancelled') AND (@CanViewAll=1 OR RequestedByUserId=@ViewerUserId OR AssignedToUserId=@ViewerUserId)),(SELECT COUNT(*) FROM dbo.Assets);"
+            Using connection = Database.CreateConnection(), command As New SqlCommand(sql, connection)
+                command.Parameters.Add("@ViewerUserId", System.Data.SqlDbType.Int).Value = viewerUserId
+                command.Parameters.Add("@CanViewAll", System.Data.SqlDbType.Bit).Value = canViewAllTickets
+                connection.Open()
+                Using reader = command.ExecuteReader()
+                    If reader.Read() Then Return New NavigationSummary With {.OpenTickets = reader.GetInt32(0), .TotalAssets = reader.GetInt32(1)}
+                End Using
+            End Using
+            Return New NavigationSummary()
+        End Function
+
         Public Function GetSnapshot() As DashboardSnapshot
             Const sql = "SELECT " &
                 "(SELECT COUNT(*) FROM dbo.Tickets WHERE Status NOT IN (N'Resolved',N'Closed',N'Cancelled')) AS OpenTickets," &

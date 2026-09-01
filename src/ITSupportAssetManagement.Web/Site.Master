@@ -21,7 +21,7 @@
                 <nav class="sidebar-nav">
                     <p class="nav-caption">Workspace</p>
                     <a class="<%= NavClass("overview") %>" href="<%= ResolveUrl("~/Default.aspx") %>"><i class="bi bi-grid-1x2-fill"></i><span>Overview</span></a>
-                    <a class="<%= NavClass("tickets") %>" href="<%= ResolveUrl("~/Tickets/List.aspx") %>"><i class="bi bi-inbox"></i><span>Tickets</span></a>
+                    <a class="<%= NavClass("tickets") %>" href="<%= ResolveUrl("~/Tickets/List.aspx") %>"><i class="bi bi-inbox"></i><span>Tickets</span><em id="OpenTicketCount" runat="server"></em></a>
                     <a class="<%= NavClass("assets") %>" href="<%= ResolveUrl("~/Assets/List.aspx") %>"><i class="bi bi-laptop"></i><span>Assets</span></a>
                     <a class="<%= NavClass("maintenance") %>" href="<%= ResolveUrl("~/Maintenance/List.aspx") %>"><i class="bi bi-tools"></i><span>Maintenance</span></a>
                     <p class="nav-caption">Management</p>
@@ -30,7 +30,7 @@
                     <a class="<%= NavClass("audit") %>" href="<%= ResolveUrl("~/Audit/List.aspx") %>"><i class="bi bi-clock-history"></i><span>Audit log</span></a>
                     <a class="<%= NavClass("settings") %>" href="<%= ResolveUrl("~/Settings/Categories.aspx") %>"><i class="bi bi-gear"></i><span>Settings</span></a>
                 </nav>
-                <div class="sidebar-footer"><div class="storage-copy"><span>Asset capacity</span><strong>78%</strong></div><div class="progress-track"><span style="width: 78%"></span></div><small>312 of 400 assets registered</small></div>
+                <div class="sidebar-footer"><div class="storage-copy"><span>Asset capacity</span><strong><asp:Literal ID="AssetCapacityPercentage" runat="server" /></strong></div><div class="progress-track"><span id="AssetCapacityBar" runat="server"></span></div><small><asp:Literal ID="AssetCapacityDetail" runat="server" /></small></div>
             </aside>
             <div class="sidebar-scrim" id="SidebarScrim"></div>
             <div class="app-main">

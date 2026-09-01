@@ -1,4 +1,9 @@
 Namespace Models
+    Public NotInheritable Class NavigationSummary
+        Public Property OpenTickets As Integer
+        Public Property TotalAssets As Integer
+    End Class
+
     Public NotInheritable Class DashboardSnapshot
         Public Property OpenTickets As Integer
         Public Property AttentionTickets As Integer

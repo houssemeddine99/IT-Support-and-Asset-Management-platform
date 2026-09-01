@@ -1,4 +1,5 @@
 Imports System.Data.SqlClient
+Imports System.Configuration
 Public Partial Class SiteMaster
     Inherits System.Web.UI.MasterPage
 
@@ -10,10 +11,14 @@ Public Partial Class SiteMaster
         Dim userId As Integer
         If Integer.TryParse(Convert.ToString(Session("UserId")), userId) Then
             Try
-                Dim role = Convert.ToString(Session("RoleName")), count = New Data.TicketRepository().GetSlaAlertCount(userId, role = "Administrator" OrElse role = "ITManager" OrElse role = "Technician")
+                Dim role = Convert.ToString(Session("RoleName")), canViewAll = role = "Administrator" OrElse role = "ITManager" OrElse role = "Technician"
+                Dim count = New Data.TicketRepository().GetSlaAlertCount(userId, canViewAll)
                 NotificationCount.Text = If(count > 99, "99+", count.ToString()) : NotificationCount.Visible = count > 0
+                BindNavigationSummary(New Data.DashboardRepository().GetNavigationSummary(userId, canViewAll))
             Catch ex As SqlException
                 NotificationCount.Visible = False
+                OpenTicketCount.Visible = False
+                BindAssetCapacity(0)
             End Try
         End If
         If Not IsPostBack Then GlobalSearchInput.Text = Convert.ToString(Request.QueryString("q"))
@@ -31,4 +36,20 @@ Public Partial Class SiteMaster
         Dim active As Boolean = If(section = "overview", path = "~/default.aspx", path.StartsWith("~/" & section & "/", StringComparison.Ordinal))
         Return If(active, "nav-link active", "nav-link")
     End Function
+
+    Private Sub BindNavigationSummary(summary As Models.NavigationSummary)
+        OpenTicketCount.InnerText = If(summary.OpenTickets > 99, "99+", summary.OpenTickets.ToString())
+        OpenTicketCount.Visible = summary.OpenTickets > 0
+        BindAssetCapacity(summary.TotalAssets)
+    End Sub
+
+    Private Sub BindAssetCapacity(totalAssets As Integer)
+        Dim capacity As Integer
+        If Not Integer.TryParse(ConfigurationManager.AppSettings("AssetCapacity"), capacity) OrElse capacity < 1 Then capacity = 400
+        Dim percentage As Decimal = Math.Round(totalAssets * 100D / capacity, 0)
+        AssetCapacityPercentage.Text = percentage.ToString("0") & "%"
+        AssetCapacityDetail.Text = totalAssets.ToString() & " of " & capacity.ToString() & " assets registered"
+        AssetCapacityBar.Style("width") = Math.Min(percentage, 100D).ToString("0", Globalization.CultureInfo.InvariantCulture) & "%"
+        AssetCapacityBar.Attributes("aria-label") = AssetCapacityDetail.Text
+    End Sub
 End Class
