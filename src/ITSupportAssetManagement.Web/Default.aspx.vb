@@ -32,7 +32,11 @@ Public Partial Class HomePage
         AttentionAssetsText.Text = snapshot.NeedsAttentionAssets.ToString() : AttentionLegendPercentage.Text = snapshot.AttentionPercentage.ToString("0.#")
         MaintenanceLegendCount.Text = snapshot.AssetsInMaintenance.ToString() : MaintenanceLegendPercentage.Text = snapshot.MaintenancePercentage.ToString("0.#")
         Dim healthyEnd = snapshot.HealthyPercentage, attentionEnd = healthyEnd + snapshot.AttentionPercentage
-        HealthRing.Attributes("style") = String.Format(Globalization.CultureInfo.InvariantCulture, "background:conic-gradient(var(--green) 0 {0}%,var(--orange) {0}% {1}%,var(--red) {1}% 100%)", healthyEnd, attentionEnd)
+        If snapshot.TotalAssets = 0 Then
+            HealthRing.Attributes("style") = "background:conic-gradient(#25375f 0 100%)"
+        Else
+            HealthRing.Attributes("style") = String.Format(Globalization.CultureInfo.InvariantCulture, "background:conic-gradient(var(--green) 0 {0}%,var(--orange) {0}% {1}%,var(--red) {1}% 100%)", healthyEnd, attentionEnd)
+        End If
         PriorityTicketRepeater.DataSource = snapshot.PriorityTickets : PriorityTicketRepeater.DataBind() : NoPriorityTicketsPanel.Visible = snapshot.PriorityTickets.Count = 0
         ActivityRepeater.DataSource = snapshot.RecentActivities : ActivityRepeater.DataBind() : NoActivityPanel.Visible = snapshot.RecentActivities.Count = 0
     End Sub
