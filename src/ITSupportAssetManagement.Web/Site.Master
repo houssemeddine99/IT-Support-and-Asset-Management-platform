@@ -13,7 +13,7 @@
     <link href="<%= ResolveUrl("~/Content/site.css?v=20260901.8") %>" rel="stylesheet" />
     <asp:ContentPlaceHolder ID="HeadContent" runat="server" />
 </head>
-<body>
+<body class="dashboard-theme">
     <form id="MainForm" runat="server">
         <div class="app-shell">
             <aside class="sidebar" id="AppSidebar" aria-label="Main navigation">
