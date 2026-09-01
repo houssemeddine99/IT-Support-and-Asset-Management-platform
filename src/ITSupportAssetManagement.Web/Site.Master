@@ -10,10 +10,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
-    <link href="<%= ResolveUrl("~/Content/site.css?v=20260901.8") %>" rel="stylesheet" />
+    <link href="<%= ResolveUrl("~/Content/site.css?v=20260901.9") %>" rel="stylesheet" />
     <asp:ContentPlaceHolder ID="HeadContent" runat="server" />
 </head>
-<body class="dashboard-theme">
+<body class="dark-workspace">
     <form id="MainForm" runat="server">
         <div class="app-shell">
             <aside class="sidebar" id="AppSidebar" aria-label="Main navigation">
