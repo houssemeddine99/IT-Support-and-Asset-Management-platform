@@ -5,12 +5,12 @@ Imports ITSupportAssetManagement.Web.Models
 
 Namespace Data
     Public NotInheritable Class TicketRepository
-        Public Function GetTickets(search As String, status As String, priority As String, sla As String, viewerUserId As Integer, canViewAll As Boolean) As List(Of TicketListItem)
+        Public Function GetTickets(search As String, status As String, priority As String, sla As String, viewerUserId As Integer, canViewAll As Boolean, pageIndex As Integer, pageSize As Integer, ByRef totalCount As Integer) As List(Of TicketListItem)
             Dim sql = New StringBuilder(
                 "SELECT t.TicketId, t.TicketNumber, t.Title, t.Priority, t.Status, c.Name AS CategoryName, " &
                 "requester.FirstName + N' ' + requester.LastName AS RequestedByName, " &
                 "CASE WHEN assignee.UserId IS NULL THEN NULL ELSE assignee.FirstName + N' ' + assignee.LastName END AS AssignedToName, " &
-                "a.AssetTag, t.CreatedAtUtc, t.DueAtUtc " &
+                "a.AssetTag, t.CreatedAtUtc, t.DueAtUtc, COUNT(*) OVER() AS TotalRows " &
                 "FROM dbo.Tickets t " &
                 "INNER JOIN dbo.TicketCategories c ON c.TicketCategoryId = t.TicketCategoryId " &
                 "INNER JOIN dbo.Users requester ON requester.UserId = t.RequestedByUserId " &
@@ -38,11 +38,14 @@ Namespace Data
                 End If
                 If sla = "overdue" Then sql.Append("AND t.DueAtUtc<SYSUTCDATETIME() AND t.Status NOT IN(N'Resolved',N'Closed',N'Cancelled') ")
                 If sla = "attention" Then sql.Append("AND t.DueAtUtc<=DATEADD(HOUR,4,SYSUTCDATETIME()) AND t.Status NOT IN(N'Resolved',N'Closed',N'Cancelled') ")
-                sql.Append("ORDER BY CASE t.Priority WHEN N'Critical' THEN 1 WHEN N'High' THEN 2 WHEN N'Medium' THEN 3 ELSE 4 END, t.CreatedAtUtc DESC;")
+                sql.Append("ORDER BY CASE t.Priority WHEN N'Critical' THEN 1 WHEN N'High' THEN 2 WHEN N'Medium' THEN 3 ELSE 4 END, t.CreatedAtUtc DESC OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;")
+                command.Parameters.Add("@Offset", SqlDbType.Int).Value = Math.Max(0, pageIndex) * pageSize
+                command.Parameters.Add("@PageSize", SqlDbType.Int).Value = pageSize
                 command.CommandText = sql.ToString()
                 connection.Open()
                 Using reader = command.ExecuteReader()
                     While reader.Read()
+                        If totalCount = 0 Then totalCount = reader.GetInt32(reader.GetOrdinal("TotalRows"))
                         results.Add(New TicketListItem With {
                             .TicketId = reader.GetInt32(reader.GetOrdinal("TicketId")),
                             .TicketNumber = reader.GetString(reader.GetOrdinal("TicketNumber")),

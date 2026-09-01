@@ -35,6 +35,6 @@
             </table>
             <asp:Panel ID="EmptyPanel" runat="server" CssClass="empty-state" Visible="false"><span><i class="bi bi-inbox"></i></span><h2>No tickets found</h2><p>Try different filters or create the first support ticket.</p><a class="button button-primary" href="Create.aspx">Create ticket</a></asp:Panel>
         </div>
-        <div class="table-footer"><span><asp:Literal ID="ResultCount" runat="server" /> tickets</span><small>Sorted by priority and creation date</small></div>
+        <div class="table-footer"><span><asp:Literal ID="ResultCount" runat="server" /> tickets</span><div class="pager"><asp:LinkButton ID="PreviousButton" runat="server" CssClass="pager-button" CausesValidation="false"><i class="bi bi-chevron-left"></i> Previous</asp:LinkButton><span><asp:Literal ID="PageText" runat="server" /></span><asp:LinkButton ID="NextButton" runat="server" CssClass="pager-button" CausesValidation="false">Next <i class="bi bi-chevron-right"></i></asp:LinkButton></div><small>Sorted by priority and creation date</small></div>
     </section>
 </asp:Content>

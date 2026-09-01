@@ -22,6 +22,6 @@
             </article>
         </ItemTemplate></asp:Repeater></div>
         <asp:Panel ID="EmptyPanel" runat="server" CssClass="empty-state" Visible="false"><span><i class="bi bi-laptop"></i></span><h2>No assets found</h2><p>Change the filters or register your first company asset.</p><a class="button button-primary" href="Create.aspx">Register asset</a></asp:Panel>
-        <div class="table-footer"><span><asp:Literal ID="ResultCount" runat="server" /> assets</span><small>Most recently registered first</small></div>
+        <div class="table-footer"><span><asp:Literal ID="ResultCount" runat="server" /> assets</span><div class="pager"><asp:LinkButton ID="PreviousButton" runat="server" CssClass="pager-button" CausesValidation="false"><i class="bi bi-chevron-left"></i> Previous</asp:LinkButton><span><asp:Literal ID="PageText" runat="server" /></span><asp:LinkButton ID="NextButton" runat="server" CssClass="pager-button" CausesValidation="false">Next <i class="bi bi-chevron-right"></i></asp:LinkButton></div><small>Most recently registered first</small></div>
     </section>
 </asp:Content>

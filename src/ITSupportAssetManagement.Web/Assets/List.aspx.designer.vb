@@ -12,5 +12,7 @@ Partial Public Class AssetListPage
     Protected WithEvents AssetRepeater As Global.System.Web.UI.WebControls.Repeater
     Protected WithEvents EmptyPanel As Global.System.Web.UI.WebControls.Panel
     Protected WithEvents ResultCount As Global.System.Web.UI.WebControls.Literal
+    Protected WithEvents PreviousButton As Global.System.Web.UI.WebControls.LinkButton
+    Protected WithEvents PageText As Global.System.Web.UI.WebControls.Literal
+    Protected WithEvents NextButton As Global.System.Web.UI.WebControls.LinkButton
 End Class
-

@@ -5,10 +5,10 @@ Imports ITSupportAssetManagement.Web.Models
 
 Namespace Data
     Public NotInheritable Class AssetRepository
-        Public Function GetAssets(search As String, status As String, categoryId As Integer?) As List(Of AssetListItem)
+        Public Function GetAssets(search As String, status As String, categoryId As Integer?, pageIndex As Integer, pageSize As Integer, ByRef totalCount As Integer) As List(Of AssetListItem)
             Dim sql = New StringBuilder(
                 "SELECT a.AssetId, a.AssetTag, c.Name AS CategoryName, a.Manufacturer, a.Model, a.SerialNumber, a.Location, a.Status, a.WarrantyEndDate, " &
-                "CASE WHEN u.UserId IS NULL THEN NULL ELSE u.FirstName + N' ' + u.LastName END AS AssignedToName " &
+                "CASE WHEN u.UserId IS NULL THEN NULL ELSE u.FirstName + N' ' + u.LastName END AS AssignedToName, COUNT(*) OVER() AS TotalRows " &
                 "FROM dbo.Assets a INNER JOIN dbo.AssetCategories c ON c.AssetCategoryId = a.AssetCategoryId " &
                 "LEFT JOIN dbo.AssetAssignments aa ON aa.AssetId = a.AssetId AND aa.ReturnedAtUtc IS NULL " &
                 "LEFT JOIN dbo.Users u ON u.UserId = aa.UserId WHERE 1 = 1 ")
@@ -27,11 +27,14 @@ Namespace Data
                     sql.Append("AND a.AssetCategoryId = @CategoryId ")
                     command.Parameters.Add("@CategoryId", SqlDbType.Int).Value = categoryId.Value
                 End If
-                sql.Append("ORDER BY a.CreatedAtUtc DESC;")
+                sql.Append("ORDER BY a.CreatedAtUtc DESC OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;")
+                command.Parameters.Add("@Offset", SqlDbType.Int).Value = Math.Max(0, pageIndex) * pageSize
+                command.Parameters.Add("@PageSize", SqlDbType.Int).Value = pageSize
                 command.CommandText = sql.ToString()
                 connection.Open()
                 Using reader = command.ExecuteReader()
                     While reader.Read()
+                        If totalCount = 0 Then totalCount = reader.GetInt32(reader.GetOrdinal("TotalRows"))
                         Dim warrantyOrdinal = reader.GetOrdinal("WarrantyEndDate")
                         results.Add(New AssetListItem With {
                             .AssetId = reader.GetInt32(reader.GetOrdinal("AssetId")), .AssetTag = reader.GetString(reader.GetOrdinal("AssetTag")),
