@@ -55,26 +55,35 @@
     <Content Include="Assets\Create.aspx" />
     <Content Include="Assets\Assign.aspx" />
     <Content Include="Assets\Details.aspx" />
+    <Content Include="Assets\Edit.aspx" />
     <Content Include="Assets\List.aspx" />
     <Content Include="Login.aspx" />
     <Content Include="Logout.aspx" />
     <Content Include="Maintenance\Create.aspx" />
     <Content Include="Maintenance\Details.aspx" />
+    <Content Include="Maintenance\Edit.aspx" />
     <Content Include="Maintenance\List.aspx" />
     <Content Include="Reports\Overview.aspx" />
     <Content Include="SetupAdmin.aspx" />
     <Content Include="Team\Create.aspx" />
     <Content Include="Team\List.aspx" />
+    <Content Include="Team\Edit.aspx" />
     <Content Include="Tickets\Create.aspx" />
+    <Content Include="Tickets\Attachment.aspx" />
     <Content Include="Tickets\Details.aspx" />
+    <Content Include="Tickets\Edit.aspx" />
     <Content Include="Tickets\List.aspx" />
     <Content Include="Global.asax" />
     <Content Include="Site.Master" />
     <Content Include="Content\site.css" />
     <Content Include="Content\auth.css" />
     <Content Include="Scripts\app.js" />
+    <Content Include="Settings\Categories.aspx" />
+    <Content Include="Audit\List.aspx" />
+    <Content Include="Error.aspx" />
     <Content Include="Web.config" />
     <Content Include="Web.config.example" />
+    <Content Include="Web.Release.config"><DependentUpon>Web.config</DependentUpon></Content>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Default.aspx.vb">

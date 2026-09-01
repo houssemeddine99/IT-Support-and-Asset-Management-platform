@@ -29,8 +29,15 @@ A VB.NET web platform that combines three project ideas:
 
 ## Open the project
 
-Open `ITSupportAssetManagement.sln` in Visual Studio. Database configuration and the initial schema will be added in the next development step.
+Open `ITSupportAssetManagement.sln` in Visual Studio. Build the solution and run it with IIS Express.
 
 ## Database
 
-Create a SQL Server database named `ITSupportAssetManagement`, then execute `database/001_initial_schema.sql`. See `database/README.md` for the complete setup instructions.
+Create a SQL Server database named `ITSupportAssetManagement`, then run every numbered file in `database` in order. See `database/README.md` for the complete setup instructions.
+
+## Operations and deployment
+
+- Apply all migrations with `scripts/Apply-Migrations.ps1`.
+- Create and verify a SQL backup with `scripts/Backup-Database.ps1`.
+- Build a deployable Release package with `scripts/Publish-Release.ps1`.
+- Follow `deployment/PRODUCTION-CHECKLIST.md` before promoting a release.

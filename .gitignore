@@ -8,4 +8,6 @@ packages/
 *.sln.docstates
 App_Data/*.mdf
 App_Data/*.ldf
-
+database/backups/
+artifacts/
+*.bak
