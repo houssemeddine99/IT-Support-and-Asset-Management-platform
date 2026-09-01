@@ -77,6 +77,7 @@
     <Content Include="Site.Master" />
     <Content Include="Content\site.css" />
     <Content Include="Content\auth.css" />
+    <Content Include="Content\Images\draexlmaier-logo.png" />
     <Content Include="Scripts\app.js" />
     <Content Include="Settings\Categories.aspx" />
     <Content Include="Audit\List.aspx" />

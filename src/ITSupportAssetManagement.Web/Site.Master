@@ -10,14 +10,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@600;700;800&amp;display=swap" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
-    <link href="<%= ResolveUrl("~/Content/site.css?v=20260901.7") %>" rel="stylesheet" />
+    <link href="<%= ResolveUrl("~/Content/site.css?v=20260901.8") %>" rel="stylesheet" />
     <asp:ContentPlaceHolder ID="HeadContent" runat="server" />
 </head>
 <body>
     <form id="MainForm" runat="server">
         <div class="app-shell">
             <aside class="sidebar" id="AppSidebar" aria-label="Main navigation">
-                <div class="brand"><span class="brand-mark"><i class="bi bi-command"></i></span><span class="brand-copy"><strong>Siliana IT Hub</strong><small>DR&#196;XLMAIER Operations</small></span></div>
+                <a class="brand" href="<%= ResolveUrl("~/Default.aspx") %>" aria-label="DRÄXLMAIER Siliana IT Hub home"><img class="brand-logo" src="<%= ResolveUrl("~/Content/Images/draexlmaier-logo.png") %>" alt="DRÄXLMAIER" /><span class="brand-site">Siliana IT Hub</span></a>
                 <nav class="sidebar-nav">
                     <p class="nav-caption">Workspace</p>
                     <a class="nav-link active" href="<%= ResolveUrl("~/Default.aspx") %>"><i class="bi bi-grid-1x2-fill"></i><span>Overview</span></a>

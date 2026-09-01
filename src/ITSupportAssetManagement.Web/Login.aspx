@@ -9,18 +9,18 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@700;800&amp;display=swap" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
-    <link href="Content/auth.css?v=20260831.2" rel="stylesheet" />
+    <link href="Content/auth.css?v=20260901.3" rel="stylesheet" />
 </head>
 <body>
     <form id="LoginForm" runat="server" class="auth-shell">
         <section class="auth-showcase">
-            <a class="auth-brand" href="Login.aspx"><span><i class="bi bi-command"></i></span><strong>Siliana IT Hub</strong></a>
+            <a class="auth-brand" href="Login.aspx" aria-label="DRÄXLMAIER Siliana IT Hub"><img src="Content/Images/draexlmaier-logo.png" alt="DRÄXLMAIER" /><small>Siliana IT Hub</small></a>
             <div class="showcase-copy"><span class="showcase-pill"><i class="bi bi-stars"></i> IT operations, simplified</span><h1>Everything your IT team needs, in one place.</h1><p>Resolve requests faster, keep every asset visible, and plan maintenance before problems interrupt the business.</p></div>
             <div class="showcase-stats"><div><strong>3.2h</strong><span>Average resolution</span></div><div><strong>92%</strong><span>Healthy assets</span></div><div><strong>99.8%</strong><span>Service uptime</span></div></div>
         </section>
         <section class="auth-form-panel">
             <div class="auth-card">
-                <div class="mobile-brand"><span><i class="bi bi-command"></i></span><strong>Siliana IT Hub</strong></div>
+                <div class="mobile-brand"><img src="Content/Images/draexlmaier-logo.png" alt="DRÄXLMAIER" /><small>Siliana IT Hub</small></div>
                 <p class="eyebrow">Welcome back</p><h2>Sign in to your workspace</h2><p class="auth-intro">Enter your account details to continue.</p>
                 <asp:Panel ID="ErrorPanel" runat="server" CssClass="auth-alert" Visible="false"><i class="bi bi-exclamation-circle"></i><asp:Literal ID="ErrorMessage" runat="server" /></asp:Panel>
                 <div class="field"><label for="EmailInput">Email address</label><div class="input-wrap"><i class="bi bi-envelope"></i><asp:TextBox ID="EmailInput" runat="server" TextMode="Email" MaxLength="254" autocomplete="email" placeholder="name@company.com" /></div><asp:RequiredFieldValidator ID="EmailRequired" runat="server" ControlToValidate="EmailInput" ErrorMessage="Email is required." CssClass="field-error" Display="Dynamic" /></div>
