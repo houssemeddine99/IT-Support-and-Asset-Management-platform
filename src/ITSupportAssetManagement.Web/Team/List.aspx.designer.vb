@@ -3,6 +3,7 @@ Option Explicit On
 Partial Public Class TeamListPage
     Protected WithEvents CreateLink As Global.System.Web.UI.WebControls.HyperLink
     Protected WithEvents SuccessPanel As Global.System.Web.UI.WebControls.Panel
+    Protected WithEvents SuccessMessage As Global.System.Web.UI.WebControls.Literal
     Protected WithEvents ErrorPanel As Global.System.Web.UI.WebControls.Panel
     Protected WithEvents ErrorMessage As Global.System.Web.UI.WebControls.Literal
     Protected WithEvents SearchInput As Global.System.Web.UI.WebControls.TextBox

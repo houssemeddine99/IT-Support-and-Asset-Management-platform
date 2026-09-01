@@ -119,6 +119,14 @@ Namespace Data
             End Using
         End Function
 
+        Public Sub SetUserActive(userId As Integer, isActive As Boolean)
+            Const sql = "UPDATE dbo.Users SET IsActive=@IsActive,UpdatedAtUtc=SYSUTCDATETIME() WHERE UserId=@UserId; IF @@ROWCOUNT=0 THROW 51000,'The account was not found.',1;"
+            Using connection = Database.CreateConnection(), command As New SqlCommand(sql, connection)
+                command.Parameters.Add("@UserId", SqlDbType.Int).Value = userId : command.Parameters.Add("@IsActive", SqlDbType.Bit).Value = isActive
+                connection.Open() : command.ExecuteNonQuery()
+            End Using
+        End Sub
+
         Private Shared Sub AddString(command As SqlCommand, name As String, length As Integer, value As String)
             command.Parameters.Add(name, SqlDbType.NVarChar, length).Value = If(String.IsNullOrWhiteSpace(value), CType(DBNull.Value, Object), value.Trim())
         End Sub
