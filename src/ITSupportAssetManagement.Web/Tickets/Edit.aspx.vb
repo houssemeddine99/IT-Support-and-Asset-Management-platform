@@ -20,7 +20,7 @@ Public Partial Class TicketEditPage
     Protected Sub SaveButton_Click(sender As Object, e As EventArgs) Handles SaveButton.Click
         Dim categoryId As Integer, assetValue As Integer, assetId As Integer? = Nothing : If Not Integer.TryParse(CategoryInput.SelectedValue, categoryId) Then ShowError("Select a category.") : Return
         If Integer.TryParse(AssetInput.SelectedValue, assetValue) Then assetId = assetValue
-        Try : _tickets.UpdateTicket(GetId(), categoryId, assetId, TitleInput.Text, DescriptionInput.Text, PriorityInput.SelectedValue) : Response.Redirect("~/Tickets/Details.aspx?id=" & GetId().ToString() & "&updated=1", False)
+        Try : _tickets.UpdateTicket(GetId(), categoryId, assetId, TitleInput.Text, DescriptionInput.Text, PriorityInput.SelectedValue) : AuditRepository.Record("Edited", "Ticket", GetId().ToString(), "Updated ticket details and priority") : Response.Redirect("~/Tickets/Details.aspx?id=" & GetId().ToString() & "&updated=1", False)
         Catch ex As Exception When TypeOf ex Is SqlException OrElse TypeOf ex Is InvalidOperationException : ShowError("The ticket could not be saved. Verify all fields.") : End Try
     End Sub
     Private Function GetId() As Integer

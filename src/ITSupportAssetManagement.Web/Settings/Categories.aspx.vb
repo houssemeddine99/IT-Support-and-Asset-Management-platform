@@ -29,7 +29,7 @@ Public Partial Class CategorySettingsPage
     End Sub
     Private Sub AddCategory(kind As String, name As String)
         Try
-            _settings.AddCategory(kind, name) : ShowSuccess("The category was added successfully.") : BindCategories()
+            _settings.AddCategory(kind, name) : AuditRepository.Record("Category created", "Setting", kind, "Created " & kind & " category " & name.Trim()) : ShowSuccess("The category was added successfully.") : BindCategories()
         Catch ex As InvalidOperationException
             ShowError(ex.Message)
         Catch ex As SqlException
@@ -41,7 +41,7 @@ Public Partial Class CategorySettingsPage
         Dim id As Integer
         If Not Integer.TryParse(Convert.ToString(e.CommandArgument), id) Then ShowError("The category is invalid.") : Return
         Try
-            _settings.ToggleCategory(kind, id) : ShowSuccess("The category status was updated.") : BindCategories()
+            _settings.ToggleCategory(kind, id) : AuditRepository.Record("Category toggled", "Setting", kind & ":" & id.ToString(), "Changed category availability") : ShowSuccess("The category status was updated.") : BindCategories()
         Catch ex As Exception When TypeOf ex Is SqlException OrElse TypeOf ex Is InvalidOperationException
             ShowError("The category status could not be updated.")
         End Try

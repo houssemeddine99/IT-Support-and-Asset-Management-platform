@@ -36,10 +36,10 @@ Public Partial Class MaintenanceDetailsPage
         End Try
     End Sub
     Protected Sub StartButton_Click(sender As Object, e As EventArgs) Handles StartButton.Click
-        ExecuteAction(Sub() _maintenance.StartIntervention(GetId()))
+        ExecuteAction(Sub() _maintenance.StartIntervention(GetId()), "Started", "Started maintenance intervention")
     End Sub
     Protected Sub CancelButton_Click(sender As Object, e As EventArgs) Handles CancelButton.Click
-        ExecuteAction(Sub() _maintenance.CancelIntervention(GetId()))
+        ExecuteAction(Sub() _maintenance.CancelIntervention(GetId()), "Cancelled", "Cancelled maintenance intervention")
     End Sub
     Protected Sub CompleteButton_Click(sender As Object, e As EventArgs) Handles CompleteButton.Click
         If Not Page.IsValid Then Return
@@ -48,7 +48,7 @@ Public Partial Class MaintenanceDetailsPage
             If Not Decimal.TryParse(LaborCostInput.Text, NumberStyles.Number, CultureInfo.InvariantCulture, parsedCost) OrElse parsedCost < 0 Then ShowError("Enter a valid non-negative labor cost.") : Return
             cost = parsedCost
         End If
-        ExecuteAction(Sub() _maintenance.CompleteIntervention(GetId(), DiagnosisInput.Text, WorkInput.Text, cost))
+        ExecuteAction(Sub() _maintenance.CompleteIntervention(GetId(), DiagnosisInput.Text, WorkInput.Text, cost), "Completed", "Completed maintenance intervention")
     End Sub
     Protected Sub AddPartButton_Click(sender As Object, e As EventArgs) Handles AddPartButton.Click
         Dim quantity As Integer, cost As Decimal? = Nothing, parsedCost As Decimal
@@ -59,6 +59,7 @@ Public Partial Class MaintenanceDetailsPage
         End If
         Try
             _maintenance.AddPart(GetId(), PartNameInput.Text, PartNumberInput.Text, quantity, cost)
+            AuditRepository.Record("Part added", "Maintenance", GetId().ToString(), "Added part " & PartNameInput.Text.Trim())
             Response.Redirect("~/Maintenance/Details.aspx?id=" & GetId().ToString() & "&partAdded=1", False)
         Catch ex As InvalidOperationException
             ShowError(ex.Message)
@@ -73,9 +74,9 @@ Public Partial Class MaintenanceDetailsPage
         If value Is Nothing OrElse value Is DBNull.Value Then Return "0.00 TND"
         Return Convert.ToDecimal(value).ToString("N2") & " TND"
     End Function
-    Private Sub ExecuteAction(action As Action)
+    Private Sub ExecuteAction(action As Action, auditAction As String, summary As String)
         Try
-            action() : Response.Redirect("~/Maintenance/Details.aspx?id=" & GetId().ToString() & "&updated=1", False)
+            action() : AuditRepository.Record(auditAction, "Maintenance", GetId().ToString(), summary) : Response.Redirect("~/Maintenance/Details.aspx?id=" & GetId().ToString() & "&updated=1", False)
         Catch ex As InvalidOperationException
             ShowError(ex.Message)
         Catch ex As SqlException

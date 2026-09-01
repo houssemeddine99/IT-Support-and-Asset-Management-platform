@@ -50,6 +50,7 @@ Public Partial Class AssetDetailsPage
         Try
             Dim repository As New AssetRepository()
             repository.ReturnAsset(assetId, "Returned through the asset details workflow.")
+            AuditRepository.Record("Returned", "Asset", assetId.ToString(), "Recorded physical asset return")
             Response.Redirect("~/Assets/Details.aspx?id=" & assetId.ToString() & "&returned=1", False)
         Catch ex As Exception When TypeOf ex Is SqlException OrElse TypeOf ex Is InvalidOperationException
             ErrorMessage.Text = "The return could not be completed. Refresh the asset and try again." : ErrorPanel.Visible = True

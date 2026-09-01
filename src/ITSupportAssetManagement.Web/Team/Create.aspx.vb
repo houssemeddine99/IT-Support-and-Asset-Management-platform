@@ -21,7 +21,8 @@ Public Partial Class TeamCreatePage
         If Not Integer.TryParse(RoleInput.SelectedValue, roleId) Then ShowError("Select a valid role.") : Return
         If Not IsStrongPassword(PasswordInput.Text) Then ShowError("Use at least 12 characters with uppercase, lowercase, number, and symbol.") : Return
         Try
-            _users.CreateUser(roleId, EmployeeCodeInput.Text, FirstNameInput.Text, LastNameInput.Text, EmailInput.Text, PasswordHasher.HashPassword(PasswordInput.Text), DepartmentInput.Text, PhoneInput.Text)
+            Dim id = _users.CreateUser(roleId, EmployeeCodeInput.Text, FirstNameInput.Text, LastNameInput.Text, EmailInput.Text, PasswordHasher.HashPassword(PasswordInput.Text), DepartmentInput.Text, PhoneInput.Text)
+            AuditRepository.Record("Created", "User", id.ToString(), "Created account for " & FirstNameInput.Text.Trim() & " " & LastNameInput.Text.Trim())
             Response.Redirect("~/Team/List.aspx?created=1", False)
         Catch ex As SqlException When ex.Number = 2601 OrElse ex.Number = 2627
             ShowError("The email address or employee code is already registered.")

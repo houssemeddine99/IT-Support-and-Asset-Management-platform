@@ -31,6 +31,7 @@ Public Partial Class MaintenanceCreatePage
         End If
         Try
             Dim id = _maintenance.CreateIntervention(assetId, technician, TypeInput.SelectedValue, scheduled, DiagnosisInput.Text, ProviderInput.Text)
+            AuditRepository.Record("Created", "Maintenance", id.ToString(), "Planned " & TypeInput.SelectedValue & " intervention")
             Response.Redirect("~/Maintenance/Details.aspx?id=" & id.ToString() & "&created=1", False)
         Catch ex As SqlException
             ShowError("The intervention could not be saved. Verify the information and try again.")

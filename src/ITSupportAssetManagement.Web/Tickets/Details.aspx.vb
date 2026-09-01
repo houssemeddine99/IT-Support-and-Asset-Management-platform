@@ -38,15 +38,15 @@ Public Partial Class TicketDetailsPage
     Protected Sub AssignButton_Click(sender As Object, e As EventArgs) Handles AssignButton.Click
         If Not IsStaff(Convert.ToString(Session("RoleName"))) Then Return
         Dim technicianId As Integer : If Not Integer.TryParse(TechnicianInput.SelectedValue, technicianId) Then ShowError("Select a technician.") : Return
-        ExecuteUpdate(Sub() _tickets.AssignTicket(GetTicketId(), technicianId))
+        ExecuteUpdate(Sub() _tickets.AssignTicket(GetTicketId(), technicianId), "Assigned", "Assigned ticket to technician user " & technicianId.ToString())
     End Sub
     Protected Sub StatusButton_Click(sender As Object, e As EventArgs) Handles StatusButton.Click
-        If IsStaff(Convert.ToString(Session("RoleName"))) Then ExecuteUpdate(Sub() _tickets.ChangeStatus(GetTicketId(), StatusInput.SelectedValue))
+        If IsStaff(Convert.ToString(Session("RoleName"))) Then ExecuteUpdate(Sub() _tickets.ChangeStatus(GetTicketId(), StatusInput.SelectedValue), "Status changed", "Changed ticket status to " & StatusInput.SelectedValue)
     End Sub
     Protected Sub CommentButton_Click(sender As Object, e As EventArgs) Handles CommentButton.Click
         Dim userId As Integer : If Not Integer.TryParse(Convert.ToString(Session("UserId")), userId) Then Return
         Try
-            _tickets.AddComment(GetTicketId(), userId, CommentInput.Text, InternalInput.Checked AndAlso IsStaff(Convert.ToString(Session("RoleName")))) : Response.Redirect("~/Tickets/Details.aspx?id=" & GetTicketId().ToString() & "&updated=1", False)
+            _tickets.AddComment(GetTicketId(), userId, CommentInput.Text, InternalInput.Checked AndAlso IsStaff(Convert.ToString(Session("RoleName")))) : AuditRepository.Record("Commented", "Ticket", GetTicketId().ToString(), "Added a ticket comment") : Response.Redirect("~/Tickets/Details.aspx?id=" & GetTicketId().ToString() & "&updated=1", False)
         Catch ex As InvalidOperationException
             ShowError(ex.Message)
         Catch ex As SqlException
@@ -64,14 +64,15 @@ Public Partial Class TicketDetailsPage
         If String.IsNullOrWhiteSpace(contentType) OrElse contentType.Length > 120 Then contentType = "application/octet-stream"
         Try
             _tickets.AddAttachment(GetTicketId(), userId, canManage, safeName, contentType, AttachmentInput.FileBytes)
+            AuditRepository.Record("Attachment uploaded", "Ticket", GetTicketId().ToString(), "Uploaded " & safeName)
             Response.Redirect("~/Tickets/Details.aspx?id=" & GetTicketId().ToString() & "&updated=1", False)
         Catch ex As Exception When TypeOf ex Is SqlException OrElse TypeOf ex Is InvalidOperationException
             ShowError("The attachment could not be uploaded.")
         End Try
     End Sub
-    Private Sub ExecuteUpdate(action As Action)
+    Private Sub ExecuteUpdate(action As Action, auditAction As String, summary As String)
         Try
-            action() : Response.Redirect("~/Tickets/Details.aspx?id=" & GetTicketId().ToString() & "&updated=1", False)
+            action() : AuditRepository.Record(auditAction, "Ticket", GetTicketId().ToString(), summary) : Response.Redirect("~/Tickets/Details.aspx?id=" & GetTicketId().ToString() & "&updated=1", False)
         Catch ex As Exception When TypeOf ex Is SqlException OrElse TypeOf ex Is InvalidOperationException
             ShowError("The ticket could not be updated. Refresh and try again.")
         End Try

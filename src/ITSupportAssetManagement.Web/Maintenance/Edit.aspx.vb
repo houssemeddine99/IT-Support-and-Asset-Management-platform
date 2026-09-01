@@ -24,7 +24,7 @@ Public Partial Class MaintenanceEditPage
             If Not DateTime.TryParseExact(ScheduledInput.Text, "yyyy-MM-ddTHH:mm", CultureInfo.InvariantCulture, DateTimeStyles.None, parsed) Then ShowError("Enter a valid schedule.") : Return
             scheduled = DateTime.SpecifyKind(parsed, DateTimeKind.Local).ToUniversalTime()
         End If
-        Try : _maintenance.UpdateIntervention(GetId(), technician, TypeInput.SelectedValue, scheduled, DiagnosisInput.Text, ProviderInput.Text) : Response.Redirect("~/Maintenance/Details.aspx?id=" & GetId().ToString() & "&updated=1", False)
+        Try : _maintenance.UpdateIntervention(GetId(), technician, TypeInput.SelectedValue, scheduled, DiagnosisInput.Text, ProviderInput.Text) : AuditRepository.Record("Edited", "Maintenance", GetId().ToString(), "Updated maintenance schedule and ownership") : Response.Redirect("~/Maintenance/Details.aspx?id=" & GetId().ToString() & "&updated=1", False)
         Catch ex As Exception When TypeOf ex Is SqlException OrElse TypeOf ex Is InvalidOperationException : ShowError("The intervention could not be saved.") : End Try
     End Sub
     Private Function GetId() As Integer

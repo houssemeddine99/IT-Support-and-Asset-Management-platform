@@ -22,7 +22,7 @@ Public Partial Class TeamEditPage
         ElseIf Not Integer.TryParse(RoleInput.SelectedValue, roleId) Then
             ShowError("Select a role.") : Return
         End If
-        Try : _users.UpdateUser(GetId(), roleId, EmployeeCodeInput.Text, FirstNameInput.Text, LastNameInput.Text, EmailInput.Text, DepartmentInput.Text, PhoneInput.Text) : Response.Redirect("~/Team/List.aspx?updated=1", False)
+        Try : _users.UpdateUser(GetId(), roleId, EmployeeCodeInput.Text, FirstNameInput.Text, LastNameInput.Text, EmailInput.Text, DepartmentInput.Text, PhoneInput.Text) : AuditRepository.Record("Edited", "User", GetId().ToString(), "Updated team member identity and role") : Response.Redirect("~/Team/List.aspx?updated=1", False)
         Catch ex As Exception When TypeOf ex Is SqlException OrElse TypeOf ex Is InvalidOperationException : ShowError("The account could not be saved. Check whether the email or employee code already exists.") : End Try
     End Sub
     Private Function GetId() As Integer

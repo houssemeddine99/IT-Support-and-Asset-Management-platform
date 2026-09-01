@@ -24,6 +24,7 @@ Public Partial Class TicketCreatePage
 
         Try
             Dim ticketNumber = _tickets.CreateTicket(categoryId, assetId, userId, TitleInput.Text, DescriptionInput.Text, PriorityInput.SelectedValue)
+            AuditRepository.Record("Created", "Ticket", ticketNumber, "Created support ticket: " & TitleInput.Text.Trim())
             Response.Redirect("~/Tickets/List.aspx?created=" & Server.UrlEncode(ticketNumber), False)
         Catch ex As SqlException
             ShowError("The ticket could not be saved. Verify the database and try again.")
@@ -54,4 +55,3 @@ Public Partial Class TicketCreatePage
         ErrorPanel.Visible = True
     End Sub
 End Class
-

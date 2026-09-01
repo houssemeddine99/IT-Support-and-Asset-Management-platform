@@ -25,7 +25,7 @@ Public Partial Class AssetEditPage
             If Not Decimal.TryParse(PurchaseCostInput.Text, NumberStyles.Number, CultureInfo.InvariantCulture, parsedCost) OrElse parsedCost < 0 Then ShowError("Enter a valid purchase cost.") : Return
             cost = parsedCost
         End If
-        Try : _assets.UpdateAsset(GetId(), categoryId, AssetTagInput.Text, SerialInput.Text, ManufacturerInput.Text, ModelInput.Text, purchaseDate, cost, warranty, LocationInput.Text, StatusInput.SelectedValue, NotesInput.Text) : Response.Redirect("~/Assets/Details.aspx?id=" & GetId().ToString() & "&updated=1", False)
+        Try : _assets.UpdateAsset(GetId(), categoryId, AssetTagInput.Text, SerialInput.Text, ManufacturerInput.Text, ModelInput.Text, purchaseDate, cost, warranty, LocationInput.Text, StatusInput.SelectedValue, NotesInput.Text) : AuditRepository.Record("Edited", "Asset", GetId().ToString(), "Updated asset identity and lifecycle information") : Response.Redirect("~/Assets/Details.aspx?id=" & GetId().ToString() & "&updated=1", False)
         Catch ex As Exception When TypeOf ex Is SqlException OrElse TypeOf ex Is InvalidOperationException : ShowError("The asset could not be saved. Check for duplicate tags or serial numbers.") : End Try
     End Sub
     Private Shared Function ParseDate(text As String) As DateTime?

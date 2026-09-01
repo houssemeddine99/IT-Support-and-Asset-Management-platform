@@ -18,6 +18,7 @@ Public Partial Class AssetAssignPage
         If Not Integer.TryParse(Request.QueryString("id"), assetId) OrElse Not Integer.TryParse(UserInput.SelectedValue, userId) OrElse Not Integer.TryParse(Convert.ToString(Session("UserId")), assignedBy) Then ShowError("The assignment information is invalid.") : Return
         Try
             _assets.AssignAsset(assetId, userId, assignedBy, NotesInput.Text)
+            AuditRepository.Record("Assigned", "Asset", assetId.ToString(), "Assigned asset to user " & userId.ToString())
             Response.Redirect("~/Assets/Details.aspx?id=" & assetId.ToString() & "&assigned=1", False)
         Catch ex As InvalidOperationException
             ShowError(ex.Message)
@@ -42,4 +43,3 @@ Public Partial Class AssetAssignPage
         ErrorMessage.Text = Server.HtmlEncode(message) : ErrorPanel.Visible = True
     End Sub
 End Class
-

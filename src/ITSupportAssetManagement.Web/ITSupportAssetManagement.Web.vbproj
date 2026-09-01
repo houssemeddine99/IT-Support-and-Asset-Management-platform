@@ -92,6 +92,7 @@
     <Compile Include="Data\UserRepository.vb" />
     <Compile Include="Data\TicketRepository.vb" />
     <Compile Include="Data\SettingsRepository.vb" />
+    <Compile Include="Data\AuditRepository.vb" />
     <Compile Include="Global.asax.vb">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -115,6 +116,7 @@
     <Compile Include="Models\TicketCommentItem.vb" />
     <Compile Include="Models\TicketAttachmentItem.vb" />
     <Compile Include="Models\CategorySettingItem.vb" />
+    <Compile Include="Models\AuditLogItem.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="Site.Master.vb">
       <DependentUpon>Site.Master</DependentUpon>
@@ -165,6 +167,8 @@
     <Compile Include="Reports\Overview.aspx.designer.vb"><DependentUpon>Overview.aspx</DependentUpon></Compile>
     <Compile Include="Settings\Categories.aspx.vb"><DependentUpon>Categories.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
     <Compile Include="Settings\Categories.aspx.designer.vb"><DependentUpon>Categories.aspx</DependentUpon></Compile>
+    <Compile Include="Audit\List.aspx.vb"><DependentUpon>List.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
+    <Compile Include="Audit\List.aspx.designer.vb"><DependentUpon>List.aspx</DependentUpon></Compile>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">17.0</VisualStudioVersion>

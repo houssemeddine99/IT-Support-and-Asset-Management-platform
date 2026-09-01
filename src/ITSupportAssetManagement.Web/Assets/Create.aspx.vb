@@ -27,6 +27,7 @@ Public Partial Class AssetCreatePage
         If Not String.IsNullOrWhiteSpace(PurchaseCostInput.Text) AndAlso Not purchaseCost.HasValue Then ShowError("Purchase cost is invalid.") : Return
         Try
             Dim id = _assets.CreateAsset(categoryId, AssetTagInput.Text, SerialNumberInput.Text, ManufacturerInput.Text, ModelInput.Text, purchaseDate, purchaseCost, warrantyDate, LocationInput.Text, StatusInput.SelectedValue, NotesInput.Text)
+            AuditRepository.Record("Created", "Asset", id.ToString(), "Registered asset " & AssetTagInput.Text.Trim().ToUpperInvariant())
             Response.Redirect("~/Assets/Details.aspx?id=" & id.ToString() & "&created=1", False)
         Catch ex As SqlException When ex.Number = 2601 OrElse ex.Number = 2627
             ShowError("The asset tag or serial number is already registered.")

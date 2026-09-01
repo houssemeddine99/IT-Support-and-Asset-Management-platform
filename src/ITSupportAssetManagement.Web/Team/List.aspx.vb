@@ -45,6 +45,7 @@ Public Partial Class TeamListPage
         If Not Boolean.TryParse(values(1), currentlyActive) Then ShowError("The account status is invalid.") : Return
         Try
             _users.SetUserActive(userId, Not currentlyActive)
+            AuditRepository.Record(If(currentlyActive, "Disabled", "Activated"), "User", userId.ToString(), If(currentlyActive, "Disabled user account", "Activated user account"))
             SuccessMessage.Text = If(currentlyActive, "The account was disabled successfully.", "The account was activated successfully.") : SuccessPanel.Visible = True : ErrorPanel.Visible = False : BindTeam()
         Catch ex As SqlException
             ShowError("The account status could not be updated.")
