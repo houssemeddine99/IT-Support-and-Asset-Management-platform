@@ -37,6 +37,10 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.Extensions" />
+    <Reference Include="QRCoder">
+      <HintPath>Libraries\QRCoder\QRCoder.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Import Include="Microsoft.VisualBasic" />
@@ -57,6 +61,8 @@
     <Content Include="Assets\Create.aspx" />
     <Content Include="Assets\Assign.aspx" />
     <Content Include="Assets\Details.aspx" />
+    <Content Include="Assets\Label.aspx" />
+    <Content Include="Assets\QrCode.ashx" />
     <Content Include="Assets\Edit.aspx" />
     <Content Include="Assets\List.aspx" />
     <Content Include="Login.aspx" />
@@ -82,6 +88,7 @@
     <Content Include="Content\site.css" />
     <Content Include="Content\auth.css" />
     <Content Include="Content\Images\draexlmaier-logo.png" />
+    <Content Include="Libraries\QRCoder\LICENSE.txt" />
     <Content Include="Scripts\app.js" />
     <Content Include="Settings\Categories.aspx" />
     <Content Include="Audit\List.aspx" />
@@ -154,6 +161,9 @@
     <Compile Include="Assets\Assign.aspx.designer.vb"><DependentUpon>Assign.aspx</DependentUpon></Compile>
     <Compile Include="Assets\Details.aspx.vb"><DependentUpon>Details.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
     <Compile Include="Assets\Details.aspx.designer.vb"><DependentUpon>Details.aspx</DependentUpon></Compile>
+    <Compile Include="Assets\Label.aspx.vb"><DependentUpon>Label.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
+    <Compile Include="Assets\Label.aspx.designer.vb"><DependentUpon>Label.aspx</DependentUpon></Compile>
+    <Compile Include="Assets\QrCode.ashx.vb"><DependentUpon>QrCode.ashx</DependentUpon></Compile>
     <Compile Include="Assets\Edit.aspx.vb"><DependentUpon>Edit.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
     <Compile Include="Assets\Edit.aspx.designer.vb"><DependentUpon>Edit.aspx</DependentUpon></Compile>
     <Compile Include="Assets\List.aspx.vb"><DependentUpon>List.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>

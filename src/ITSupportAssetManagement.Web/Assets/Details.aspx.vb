@@ -31,6 +31,7 @@ Public Partial Class AssetDetailsPage
             Dim roleName = Convert.ToString(Session("RoleName")), canManage = roleName = "Administrator" OrElse roleName = "ITManager"
             AssignLink.NavigateUrl = "Assign.aspx?id=" & assetId.ToString() : AssignLink.Visible = canManage AndAlso asset.Status = "Available"
             EditLink.NavigateUrl = "Edit.aspx?id=" & assetId.ToString() : EditLink.Visible = canManage
+            LabelLink.NavigateUrl = "Label.aspx?id=" & assetId.ToString()
             ScheduleMaintenanceLink.NavigateUrl = "~/Maintenance/Create.aspx?assetId=" & assetId.ToString()
             ScheduleMaintenanceLink.Visible = canManage OrElse roleName = "Technician"
             MaintenanceListLink.NavigateUrl = "~/Maintenance/List.aspx?search=" & Server.UrlEncode(asset.AssetTag)
