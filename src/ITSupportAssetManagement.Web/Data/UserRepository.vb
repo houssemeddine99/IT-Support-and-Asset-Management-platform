@@ -54,6 +54,63 @@ Namespace Data
             End Using
         End Sub
 
+        Public Function CreatePasswordResetToken(email As String, tokenHash As Byte(), expiresAtUtc As DateTime) As AuthenticatedUser
+            Using connection = Database.CreateConnection()
+                connection.Open()
+                Using transaction = connection.BeginTransaction()
+                    Const findSql = "SELECT u.UserId,u.FirstName,u.LastName,u.Email,r.Name FROM dbo.Users u INNER JOIN dbo.Roles r ON r.RoleId=u.RoleId WHERE u.Email=@Email AND u.IsActive=1;"
+                    Dim user As AuthenticatedUser = Nothing
+                    Using command As New SqlCommand(findSql, connection, transaction)
+                        command.Parameters.Add("@Email", SqlDbType.NVarChar, 254).Value = email.Trim().ToLowerInvariant()
+                        Using reader = command.ExecuteReader(CommandBehavior.SingleRow)
+                            If reader.Read() Then user = New AuthenticatedUser With {.UserId=reader.GetInt32(0),.FirstName=reader.GetString(1),.LastName=reader.GetString(2),.Email=reader.GetString(3),.RoleName=reader.GetString(4)}
+                        End Using
+                    End Using
+                    If user Is Nothing Then transaction.Commit() : Return Nothing
+                    Using invalidate As New SqlCommand("UPDATE dbo.PasswordResetTokens SET UsedAtUtc=SYSUTCDATETIME() WHERE UserId=@UserId AND UsedAtUtc IS NULL;", connection, transaction)
+                        invalidate.Parameters.Add("@UserId", SqlDbType.Int).Value = user.UserId : invalidate.ExecuteNonQuery()
+                    End Using
+                    Using insert As New SqlCommand("INSERT dbo.PasswordResetTokens(UserId,TokenHash,ExpiresAtUtc) VALUES(@UserId,@TokenHash,@Expires);", connection, transaction)
+                        insert.Parameters.Add("@UserId", SqlDbType.Int).Value = user.UserId
+                        insert.Parameters.Add("@TokenHash", SqlDbType.Binary, 32).Value = tokenHash
+                        insert.Parameters.Add("@Expires", SqlDbType.DateTime2).Value = expiresAtUtc
+                        insert.ExecuteNonQuery()
+                    End Using
+                    transaction.Commit() : Return user
+                End Using
+            End Using
+        End Function
+
+        Public Function IsPasswordResetTokenValid(tokenHash As Byte()) As Boolean
+            Const sql = "SELECT CASE WHEN EXISTS(SELECT 1 FROM dbo.PasswordResetTokens WHERE TokenHash=@TokenHash AND UsedAtUtc IS NULL AND ExpiresAtUtc>SYSUTCDATETIME()) THEN 1 ELSE 0 END;"
+            Using connection = Database.CreateConnection(), command As New SqlCommand(sql, connection)
+                command.Parameters.Add("@TokenHash", SqlDbType.Binary, 32).Value = tokenHash : connection.Open()
+                Return Convert.ToInt32(command.ExecuteScalar()) = 1
+            End Using
+        End Function
+
+        Public Function ResetPasswordWithToken(tokenHash As Byte(), passwordHash As String) As Boolean
+            Using connection = Database.CreateConnection()
+                connection.Open()
+                Using transaction = connection.BeginTransaction(IsolationLevel.Serializable)
+                    Dim userId As Integer
+                    Const consumeSql = "UPDATE dbo.PasswordResetTokens SET UsedAtUtc=SYSUTCDATETIME() OUTPUT INSERTED.UserId WHERE TokenHash=@TokenHash AND UsedAtUtc IS NULL AND ExpiresAtUtc>SYSUTCDATETIME();"
+                    Using command As New SqlCommand(consumeSql, connection, transaction)
+                        command.Parameters.Add("@TokenHash", SqlDbType.Binary, 32).Value = tokenHash
+                        Dim result = command.ExecuteScalar()
+                        If result Is Nothing Then transaction.Rollback() : Return False
+                        userId = Convert.ToInt32(result)
+                    End Using
+                    Using command As New SqlCommand("UPDATE dbo.Users SET PasswordHash=@Hash,MustChangePassword=0,UpdatedAtUtc=SYSUTCDATETIME() WHERE UserId=@UserId AND IsActive=1;", connection, transaction)
+                        command.Parameters.Add("@Hash", SqlDbType.NVarChar, 500).Value = passwordHash
+                        command.Parameters.Add("@UserId", SqlDbType.Int).Value = userId
+                        If command.ExecuteNonQuery() <> 1 Then transaction.Rollback() : Return False
+                    End Using
+                    transaction.Commit() : Return True
+                End Using
+            End Using
+        End Function
+
         Public Function CreateFirstAdministrator(firstName As String, lastName As String, email As String, passwordHash As String) As Integer
             Using connection = Database.CreateConnection()
                 connection.Open()

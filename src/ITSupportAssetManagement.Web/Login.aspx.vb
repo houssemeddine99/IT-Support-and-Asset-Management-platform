@@ -13,6 +13,10 @@ Public Partial Class LoginPage
                 SuccessMessage.Text = "Password changed successfully. Sign in with your new password."
                 SuccessPanel.Visible = True
             End If
+            If Request.QueryString("reset") = "1" Then
+                SuccessMessage.Text = "Password reset successfully. Sign in with your new password."
+                SuccessPanel.Visible = True
+            End If
             Dim anyUsers As Boolean = False
             Dim databaseError As SqlException = Nothing
             If TryReadUserState(anyUsers, databaseError) Then

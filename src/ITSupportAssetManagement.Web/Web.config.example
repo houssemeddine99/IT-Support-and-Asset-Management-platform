@@ -2,6 +2,15 @@
 <configuration>
   <appSettings>
     <add key="AssetCapacity" value="400" />
+    <!-- Use Pickup while developing. Reset emails are written to App_Data/MailPickup. -->
+    <!-- Change Mail:Mode to Smtp and supply your organization's relay for production. -->
+    <add key="Mail:Mode" value="Pickup" />
+    <add key="Mail:From" value="siliana-it@company.example" />
+    <add key="Mail:SmtpHost" value="smtp.company.example" />
+    <add key="Mail:SmtpPort" value="587" />
+    <add key="Mail:EnableSsl" value="true" />
+    <add key="Mail:Username" value="" />
+    <add key="Mail:Password" value="" />
   </appSettings>
   <connectionStrings>
     <add name="ITSupportDb"
