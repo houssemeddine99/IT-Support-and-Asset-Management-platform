@@ -25,10 +25,10 @@
                 <p class="eyebrow">Siliana IT Hub</p><h2>Welcome back!</h2><p class="auth-intro">Sign in to your account to continue</p>
                 <asp:Panel ID="SuccessPanel" runat="server" CssClass="auth-alert success" Visible="false"><i class="bi bi-check-circle"></i><asp:Literal ID="SuccessMessage" runat="server" /></asp:Panel>
                 <asp:Panel ID="ErrorPanel" runat="server" CssClass="auth-alert" Visible="false"><i class="bi bi-exclamation-circle"></i><asp:Literal ID="ErrorMessage" runat="server" /></asp:Panel>
-                <div class="social-signin">
-                    <button type="button" class="google-btn"><i class="bi bi-google"></i> Continue with Google</button>
-                </div>
-                <div class="divider"><span>or</span></div>
+                <asp:Panel ID="CompanySignInPanel" runat="server" CssClass="social-signin" Visible="false">
+                    <asp:HyperLink ID="CompanySignInLink" runat="server" NavigateUrl="~/ExternalLogin.aspx" CssClass="google-btn company-sso"><i class="bi bi-microsoft"></i> Continue with company account</asp:HyperLink>
+                    <div class="divider"><span>or</span></div>
+                </asp:Panel>
                 <div class="field"><label for="EmailInput">Email address</label><div class="input-wrap"><i class="bi bi-envelope"></i><asp:TextBox ID="EmailInput" runat="server" TextMode="Email" MaxLength="254" autocomplete="email" placeholder="name@company.com" /></div><asp:RequiredFieldValidator ID="EmailRequired" runat="server" ControlToValidate="EmailInput" ErrorMessage="Email is required." CssClass="field-error" Display="Dynamic" /></div>
                 <div class="field"><div class="label-row"><label for="PasswordInput">Password</label><a href="ForgotPassword.aspx">Forgot password?</a></div><div class="input-wrap"><i class="bi bi-lock"></i><asp:TextBox ID="PasswordInput" runat="server" TextMode="Password" MaxLength="128" autocomplete="current-password" placeholder="Enter your password" /></div><asp:RequiredFieldValidator ID="PasswordRequired" runat="server" ControlToValidate="PasswordInput" ErrorMessage="Password is required." CssClass="field-error" Display="Dynamic" /></div>
                 <label class="remember"><asp:CheckBox ID="RememberInput" runat="server" /> <span>Keep me signed in</span></label>

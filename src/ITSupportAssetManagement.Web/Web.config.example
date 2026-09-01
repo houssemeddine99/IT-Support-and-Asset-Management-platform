@@ -11,6 +11,10 @@
     <add key="Mail:EnableSsl" value="true" />
     <add key="Mail:Username" value="" />
     <add key="Mail:Password" value="" />
+    <!-- Optional Microsoft Entra ID sign-in. All three values are required to show the company sign-in button. -->
+    <add key="Identity:TenantId" value="00000000-0000-0000-0000-000000000000" />
+    <add key="Identity:ClientId" value="00000000-0000-0000-0000-000000000000" />
+    <add key="Identity:ClientSecret" value="set-through-deployment-secrets" />
   </appSettings>
   <connectionStrings>
     <add name="ITSupportDb"

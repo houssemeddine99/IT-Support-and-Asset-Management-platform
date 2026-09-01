@@ -1,0 +1,2 @@
+<%@ Page Title="Company sign-in" Language="VB" AutoEventWireup="false" CodeBehind="ExternalLogin.aspx.vb" Inherits="ITSupportAssetManagement.Web.ExternalLoginPage" %>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8" /><meta name="viewport" content="width=device-width,initial-scale=1" /><title>Company sign-in - Siliana IT Hub</title></head><body><p>Redirecting to company sign-in...</p></body></html>

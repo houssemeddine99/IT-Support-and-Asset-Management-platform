@@ -17,6 +17,10 @@ Public Partial Class LoginPage
                 SuccessMessage.Text = "Password reset successfully. Sign in with your new password."
                 SuccessPanel.Visible = True
             End If
+            CompanySignInPanel.Visible = ExternalIdentityService.IsConfigured()
+            If Not String.IsNullOrWhiteSpace(Request.QueryString("ssoError")) Then
+                ShowError("Company sign-in could not be completed. Use your password or contact the IT administrator.")
+            End If
             Dim anyUsers As Boolean = False
             Dim databaseError As SqlException = Nothing
             If TryReadUserState(anyUsers, databaseError) Then
