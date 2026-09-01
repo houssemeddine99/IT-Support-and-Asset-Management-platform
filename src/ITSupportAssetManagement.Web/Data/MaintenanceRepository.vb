@@ -31,6 +31,22 @@ Namespace Data
             Return results
         End Function
 
+        Public Function GetCalendarInterventions(startUtc As DateTime, endUtc As DateTime) As List(Of MaintenanceListItem)
+            Const sql As String = "SELECT m.MaintenanceInterventionId,m.AssetId,a.AssetTag,LTRIM(RTRIM(COALESCE(a.Manufacturer+N' ',N'')+a.Model)) AssetName,m.InterventionType,m.Status,m.ScheduledAtUtc,CASE WHEN u.UserId IS NULL THEN NULL ELSE u.FirstName+N' '+u.LastName END TechnicianName FROM dbo.MaintenanceInterventions m INNER JOIN dbo.Assets a ON a.AssetId=m.AssetId LEFT JOIN dbo.Users u ON u.UserId=m.TechnicianUserId WHERE m.ScheduledAtUtc>=@StartUtc AND m.ScheduledAtUtc<@EndUtc ORDER BY m.ScheduledAtUtc;"
+            Dim results As New List(Of MaintenanceListItem)()
+            Using connection = Database.CreateConnection(), command As New SqlCommand(sql, connection)
+                command.Parameters.Add("@StartUtc", SqlDbType.DateTime2).Value = startUtc
+                command.Parameters.Add("@EndUtc", SqlDbType.DateTime2).Value = endUtc
+                connection.Open()
+                Using reader = command.ExecuteReader()
+                    While reader.Read()
+                        results.Add(New MaintenanceListItem With {.MaintenanceInterventionId=reader.GetInt32(0),.AssetId=reader.GetInt32(1),.AssetTag=reader.GetString(2),.AssetName=reader.GetString(3),.InterventionType=reader.GetString(4),.Status=reader.GetString(5),.ScheduledAtUtc=reader.GetDateTime(6),.TechnicianName=ReadNullableString(reader,"TechnicianName")})
+                    End While
+                End Using
+            End Using
+            Return results
+        End Function
+
         Public Function GetEligibleAssets() As List(Of LookupOption)
             Return GetOptions("SELECT AssetId, AssetTag + N' - ' + LTRIM(RTRIM(COALESCE(Manufacturer + N' ', N'') + Model)) FROM dbo.Assets WHERE Status NOT IN (N'Retired',N'Lost') ORDER BY AssetTag;")
         End Function

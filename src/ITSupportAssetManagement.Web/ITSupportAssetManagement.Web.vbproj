@@ -62,6 +62,7 @@
     <Content Include="Login.aspx" />
     <Content Include="Logout.aspx" />
     <Content Include="Maintenance\Create.aspx" />
+    <Content Include="Maintenance\Calendar.aspx" />
     <Content Include="Maintenance\Details.aspx" />
     <Content Include="Maintenance\Edit.aspx" />
     <Content Include="Maintenance\List.aspx" />
@@ -169,6 +170,8 @@
     <Compile Include="Tickets\List.aspx.designer.vb"><DependentUpon>List.aspx</DependentUpon></Compile>
     <Compile Include="Maintenance\Create.aspx.vb"><DependentUpon>Create.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
     <Compile Include="Maintenance\Create.aspx.designer.vb"><DependentUpon>Create.aspx</DependentUpon></Compile>
+    <Compile Include="Maintenance\Calendar.aspx.vb"><DependentUpon>Calendar.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
+    <Compile Include="Maintenance\Calendar.aspx.designer.vb"><DependentUpon>Calendar.aspx</DependentUpon></Compile>
     <Compile Include="Maintenance\Details.aspx.vb"><DependentUpon>Details.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
     <Compile Include="Maintenance\Details.aspx.designer.vb"><DependentUpon>Details.aspx</DependentUpon></Compile>
     <Compile Include="Maintenance\Edit.aspx.vb"><DependentUpon>Edit.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>

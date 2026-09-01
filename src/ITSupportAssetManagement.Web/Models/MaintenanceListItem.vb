@@ -20,5 +20,26 @@ Namespace Models
                 Return "maintenance-state maintenance-" & Status.ToLowerInvariant()
             End Get
         End Property
+        Public ReadOnly Property IsOverdue As Boolean
+            Get
+                Return ScheduledAtUtc.HasValue AndAlso ScheduledAtUtc.Value < DateTime.UtcNow AndAlso (Status = "Planned" OrElse Status = "InProgress")
+            End Get
+        End Property
+    End Class
+
+    Public NotInheritable Class MaintenanceCalendarDay
+        Public Property [Date] As DateTime
+        Public Property IsCurrentMonth As Boolean
+        Public Property IsToday As Boolean
+        Public Property Items As New List(Of MaintenanceListItem)()
+        Public ReadOnly Property CssClass As String
+            Get
+                Dim classes As String = "calendar-day"
+                If Not IsCurrentMonth Then classes &= " outside-month"
+                If IsToday Then classes &= " today"
+                If Items.Any(Function(item) item.IsOverdue) Then classes &= " has-overdue"
+                Return classes
+            End Get
+        End Property
     End Class
 End Namespace

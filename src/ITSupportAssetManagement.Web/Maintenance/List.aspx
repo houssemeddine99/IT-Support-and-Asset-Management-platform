@@ -1,6 +1,6 @@
 <%@ Page Title="Maintenance" Language="VB" MasterPageFile="~/Site.Master" AutoEventWireup="false" CodeBehind="List.aspx.vb" Inherits="ITSupportAssetManagement.Web.MaintenanceListPage" %>
 <asp:Content ID="MaintenanceListContent" ContentPlaceHolderID="MainContent" runat="server">
-    <div class="page-heading ticket-page-heading"><div><p class="eyebrow">Maintenance operations</p><h1>Intervention planner</h1><p>Plan preventive work, execute repairs, and preserve a complete service history.</p></div><a class="button button-primary" href="Create.aspx"><i class="bi bi-calendar2-plus"></i> Plan intervention</a></div>
+    <div class="page-heading ticket-page-heading"><div><p class="eyebrow">Maintenance operations</p><h1>Intervention planner</h1><p>Plan preventive work, execute repairs, and preserve a complete service history.</p></div><div class="heading-actions"><a class="button button-secondary" href="Calendar.aspx"><i class="bi bi-calendar3"></i> Calendar</a><a class="button button-primary" href="Create.aspx"><i class="bi bi-calendar2-plus"></i> Plan intervention</a></div></div>
     <asp:Panel ID="SuccessPanel" runat="server" CssClass="page-alert success" Visible="false"><i class="bi bi-check-circle"></i><span>The maintenance intervention was created successfully.</span></asp:Panel>
     <asp:Panel ID="ErrorPanel" runat="server" CssClass="page-alert error" Visible="false"><i class="bi bi-exclamation-circle"></i><asp:Literal ID="ErrorMessage" runat="server" /></asp:Panel>
     <section class="panel tickets-workspace">
