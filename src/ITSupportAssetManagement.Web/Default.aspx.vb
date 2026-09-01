@@ -2,6 +2,7 @@ Imports System.Data.SqlClient
 Imports System.Text
 Imports ITSupportAssetManagement.Web.Data
 Imports ITSupportAssetManagement.Web.Models
+Imports ITSupportAssetManagement.Web.Security
 
 Public Partial Class HomePage
     Inherits System.Web.UI.Page
@@ -17,6 +18,9 @@ Public Partial Class HomePage
     End Sub
 
     Private Sub BindIdentity()
+        Dim roleName As String = Convert.ToString(Session("RoleName"))
+        AddAssetAction.Visible = AuthorizationService.CanManageAssets(roleName)
+        PlanMaintenanceAction.Visible = AuthorizationService.CanExecuteMaintenance(roleName)
         Dim displayName = Convert.ToString(Session("DisplayName")), firstName = If(String.IsNullOrWhiteSpace(displayName), "team", displayName.Split(" "c)(0))
         Dim greeting = If(DateTime.Now.Hour < 12, "Good morning", If(DateTime.Now.Hour < 18, "Good afternoon", "Good evening"))
         GreetingText.Text = Server.HtmlEncode(greeting & ", " & firstName)

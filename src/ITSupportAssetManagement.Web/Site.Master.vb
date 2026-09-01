@@ -1,5 +1,6 @@
 Imports System.Data.SqlClient
 Imports System.Configuration
+Imports ITSupportAssetManagement.Web.Security
 Public Partial Class SiteMaster
     Inherits System.Web.UI.MasterPage
 
@@ -10,6 +11,13 @@ Public Partial Class SiteMaster
             Context.ApplicationInstance.CompleteRequest()
             Return
         End If
+        Dim currentRole As String = Convert.ToString(Session("RoleName"))
+        If Not AuthorizationService.CanAccessPath(currentRole, path) Then
+            Response.Redirect(ResolveUrl("~/AccessDenied.aspx"), False)
+            Context.ApplicationInstance.CompleteRequest()
+            Return
+        End If
+        BindRoleNavigation(currentRole)
         GlobalSearchPanel.Attributes("data-search-url") = ResolveUrl("~/Search/Index.aspx")
         UserInitials.Text = Server.HtmlEncode(Convert.ToString(Session("Initials")))
         UserDisplayName.Text = Server.HtmlEncode(Convert.ToString(Session("DisplayName")))
@@ -28,6 +36,15 @@ Public Partial Class SiteMaster
             End Try
         End If
         If Not IsPostBack Then GlobalSearchInput.Text = Convert.ToString(Request.QueryString("q"))
+    End Sub
+
+    Private Sub BindRoleNavigation(roleName As String)
+        Dim isAdministrator As Boolean = roleName = "Administrator"
+        Dim isManager As Boolean = roleName = "ITManager"
+        TeamNavigation.Visible = isAdministrator OrElse isManager
+        ReportsNavigation.Visible = isAdministrator OrElse isManager
+        AuditNavigation.Visible = isAdministrator
+        SettingsNavigation.Visible = isAdministrator
     End Sub
 
     Protected Sub GlobalSearchButton_Click(sender As Object, e As EventArgs) Handles GlobalSearchButton.Click

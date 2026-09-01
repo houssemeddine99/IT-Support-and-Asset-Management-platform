@@ -25,4 +25,6 @@ Partial Public Class HomePage
     Protected WithEvents MaintenanceLegendPercentage As Global.System.Web.UI.WebControls.Literal
     Protected WithEvents ActivityRepeater As Global.System.Web.UI.WebControls.Repeater
     Protected WithEvents NoActivityPanel As Global.System.Web.UI.WebControls.Panel
+    Protected WithEvents AddAssetAction As Global.System.Web.UI.WebControls.PlaceHolder
+    Protected WithEvents PlanMaintenanceAction As Global.System.Web.UI.WebControls.PlaceHolder
 End Class

@@ -5,6 +5,10 @@ Partial Public Class SiteMaster
     Protected WithEvents HeadContent As Global.System.Web.UI.WebControls.ContentPlaceHolder
     Protected WithEvents MainForm As Global.System.Web.UI.HtmlControls.HtmlForm
     Protected WithEvents MainContent As Global.System.Web.UI.WebControls.ContentPlaceHolder
+    Protected WithEvents TeamNavigation As Global.System.Web.UI.WebControls.PlaceHolder
+    Protected WithEvents ReportsNavigation As Global.System.Web.UI.WebControls.PlaceHolder
+    Protected WithEvents AuditNavigation As Global.System.Web.UI.WebControls.PlaceHolder
+    Protected WithEvents SettingsNavigation As Global.System.Web.UI.WebControls.PlaceHolder
     Protected WithEvents GlobalSearchPanel As Global.System.Web.UI.WebControls.Panel
     Protected WithEvents GlobalSearchInput As Global.System.Web.UI.WebControls.TextBox
     Protected WithEvents GlobalSearchButton As Global.System.Web.UI.WebControls.LinkButton
