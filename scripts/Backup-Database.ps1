@@ -1,5 +1,5 @@
 param(
-    [string]$ConnectionString = 'Data Source=(localdb)\SilianaIT;Initial Catalog=ITSupportAssetManagement;Integrated Security=True;TrustServerCertificate=True',
+    [string]$ConnectionString = 'Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=ITSupportAssetManagement;Integrated Security=True;TrustServerCertificate=True',
     [string]$OutputDirectory = (Join-Path $PSScriptRoot '..\database\backups')
 )
 $ErrorActionPreference = 'Stop'
