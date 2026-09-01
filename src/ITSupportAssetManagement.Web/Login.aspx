@@ -30,10 +30,10 @@
                 </div>
                 <div class="divider"><span>or</span></div>
                 <div class="field"><label for="EmailInput">Email address</label><div class="input-wrap"><i class="bi bi-envelope"></i><asp:TextBox ID="EmailInput" runat="server" TextMode="Email" MaxLength="254" autocomplete="email" placeholder="name@company.com" /></div><asp:RequiredFieldValidator ID="EmailRequired" runat="server" ControlToValidate="EmailInput" ErrorMessage="Email is required." CssClass="field-error" Display="Dynamic" /></div>
-                <div class="field"><div class="label-row"><label for="PasswordInput">Password</label><a href="#forgot">Forgot password?</a></div><div class="input-wrap"><i class="bi bi-lock"></i><asp:TextBox ID="PasswordInput" runat="server" TextMode="Password" MaxLength="128" autocomplete="current-password" placeholder="Enter your password" /></div><asp:RequiredFieldValidator ID="PasswordRequired" runat="server" ControlToValidate="PasswordInput" ErrorMessage="Password is required." CssClass="field-error" Display="Dynamic" /></div>
+                <div class="field"><div class="label-row"><label for="PasswordInput">Password</label><a href="#account-help">Forgot password?</a></div><div class="input-wrap"><i class="bi bi-lock"></i><asp:TextBox ID="PasswordInput" runat="server" TextMode="Password" MaxLength="128" autocomplete="current-password" placeholder="Enter your password" /></div><asp:RequiredFieldValidator ID="PasswordRequired" runat="server" ControlToValidate="PasswordInput" ErrorMessage="Password is required." CssClass="field-error" Display="Dynamic" /></div>
                 <label class="remember"><asp:CheckBox ID="RememberInput" runat="server" /> <span>Keep me signed in</span></label>
                 <asp:Button ID="LoginButton" runat="server" Text="Sign in" CssClass="auth-button" />
-                <p class="auth-help">Need access? <span>Contact your IT administrator</span></p>
+                <p class="auth-help" id="account-help">Need access or a password reset? <span>Contact your IT administrator</span></p>
                 <p class="auth-footnote"><i class="bi bi-shield-check"></i> Protected with secure password hashing and encrypted sessions.</p>
             </div>
         </section>
