@@ -185,9 +185,6 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
   </PropertyGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.VisualBasic.targets" />
-  <Target Name="StartDevelopmentLocalDb" BeforeTargets="Build">
-    <Exec Command="&quot;$(ProgramW6432)\Microsoft SQL Server\170\Tools\Binn\SqlLocalDB.exe&quot; start MSSQLLocalDB" IgnoreExitCode="true" />
-  </Target>
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="Exists('$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets')" />
   <ProjectExtensions>
     <VisualStudio>
