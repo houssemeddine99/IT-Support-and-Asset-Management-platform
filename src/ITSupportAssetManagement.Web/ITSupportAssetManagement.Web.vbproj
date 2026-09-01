@@ -106,6 +106,7 @@
     <Compile Include="Models\DashboardSnapshot.vb" />
     <Compile Include="Models\MaintenanceDetails.vb" />
     <Compile Include="Models\MaintenanceListItem.vb" />
+    <Compile Include="Models\MaintenancePartItem.vb" />
     <Compile Include="Models\OperationsReport.vb" />
     <Compile Include="Models\TicketListItem.vb" />
     <Compile Include="Models\TeamMemberListItem.vb" />

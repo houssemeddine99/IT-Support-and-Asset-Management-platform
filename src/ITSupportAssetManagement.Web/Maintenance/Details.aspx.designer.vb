@@ -17,6 +17,15 @@ Partial Public Class MaintenanceDetailsPage
     Protected WithEvents AssetLocation As Global.System.Web.UI.WebControls.Literal
     Protected WithEvents Diagnosis As Global.System.Web.UI.WebControls.Literal
     Protected WithEvents WorkPerformed As Global.System.Web.UI.WebControls.Literal
+    Protected WithEvents PartsTotal As Global.System.Web.UI.WebControls.Literal
+    Protected WithEvents PartsRepeater As Global.System.Web.UI.WebControls.Repeater
+    Protected WithEvents NoPartsPanel As Global.System.Web.UI.WebControls.Panel
+    Protected WithEvents AddPartPanel As Global.System.Web.UI.WebControls.Panel
+    Protected WithEvents PartNameInput As Global.System.Web.UI.WebControls.TextBox
+    Protected WithEvents PartNumberInput As Global.System.Web.UI.WebControls.TextBox
+    Protected WithEvents QuantityInput As Global.System.Web.UI.WebControls.TextBox
+    Protected WithEvents UnitCostInput As Global.System.Web.UI.WebControls.TextBox
+    Protected WithEvents AddPartButton As Global.System.Web.UI.WebControls.Button
     Protected WithEvents CompletionPanel As Global.System.Web.UI.WebControls.Panel
     Protected WithEvents DiagnosisInput As Global.System.Web.UI.WebControls.TextBox
     Protected WithEvents WorkInput As Global.System.Web.UI.WebControls.TextBox
@@ -30,6 +39,7 @@ Partial Public Class MaintenanceDetailsPage
     Protected WithEvents Completed As Global.System.Web.UI.WebControls.Literal
     Protected WithEvents Provider As Global.System.Web.UI.WebControls.Literal
     Protected WithEvents LaborCost As Global.System.Web.UI.WebControls.Literal
+    Protected WithEvents TotalCost As Global.System.Web.UI.WebControls.Literal
     Protected WithEvents ActionsPanel As Global.System.Web.UI.WebControls.Panel
     Protected WithEvents StartButton As Global.System.Web.UI.WebControls.Button
     Protected WithEvents CancelButton As Global.System.Web.UI.WebControls.Button

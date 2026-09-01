@@ -68,6 +68,32 @@ Namespace Data
             End Using
         End Function
 
+        Public Function GetParts(interventionId As Integer) As List(Of MaintenancePartItem)
+            Const sql = "SELECT MaintenancePartId,PartName,PartNumber,Quantity,UnitCost FROM dbo.MaintenanceParts WHERE MaintenanceInterventionId=@Id ORDER BY MaintenancePartId DESC;"
+            Dim results As New List(Of MaintenancePartItem)()
+            Using connection = Database.CreateConnection(), command As New SqlCommand(sql, connection)
+                command.Parameters.Add("@Id", SqlDbType.Int).Value = interventionId : connection.Open()
+                Using reader = command.ExecuteReader()
+                    While reader.Read()
+                        results.Add(New MaintenancePartItem With {.MaintenancePartId = reader.GetInt32(0), .PartName = reader.GetString(1), .PartNumber = ReadNullableString(reader, "PartNumber"), .Quantity = reader.GetInt32(3), .UnitCost = ReadNullableDecimal(reader, "UnitCost")})
+                    End While
+                End Using
+            End Using
+            Return results
+        End Function
+
+        Public Sub AddPart(interventionId As Integer, partName As String, partNumber As String, quantity As Integer, unitCost As Decimal?)
+            If String.IsNullOrWhiteSpace(partName) Then Throw New InvalidOperationException("Enter the part name.")
+            If quantity <= 0 Then Throw New InvalidOperationException("Quantity must be at least one.")
+            Const sql = "IF NOT EXISTS(SELECT 1 FROM dbo.MaintenanceInterventions WHERE MaintenanceInterventionId=@Id AND Status IN (N'Planned',N'InProgress')) THROW 51000,'Parts can only be added to an active intervention.',1; INSERT dbo.MaintenanceParts(MaintenanceInterventionId,PartName,PartNumber,Quantity,UnitCost) VALUES(@Id,@Name,@Number,@Quantity,@UnitCost);"
+            Using connection = Database.CreateConnection(), command As New SqlCommand(sql, connection)
+                command.Parameters.Add("@Id", SqlDbType.Int).Value = interventionId : command.Parameters.Add("@Name", SqlDbType.NVarChar, 150).Value = partName.Trim()
+                AddNullableString(command, "@Number", 100, partNumber) : command.Parameters.Add("@Quantity", SqlDbType.Int).Value = quantity
+                Dim cost = command.Parameters.Add("@UnitCost", SqlDbType.Decimal) : cost.Precision = 18 : cost.Scale = 2 : cost.Value = If(unitCost.HasValue, CType(unitCost.Value, Object), DBNull.Value)
+                connection.Open() : command.ExecuteNonQuery()
+            End Using
+        End Sub
+
         Public Sub StartIntervention(interventionId As Integer)
             ChangeStatus(interventionId, "InProgress", Nothing, Nothing, Nothing)
         End Sub
