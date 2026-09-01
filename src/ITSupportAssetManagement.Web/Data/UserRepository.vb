@@ -108,6 +108,27 @@ Namespace Data
             Return results
         End Function
 
+        Public Function GetTeamMemberById(userId As Integer) As TeamMemberListItem
+            Const sql = "SELECT u.UserId,u.RoleId,u.EmployeeCode,u.FirstName,u.LastName,u.Email,u.Department,u.PhoneNumber,u.IsActive,r.Name RoleName FROM dbo.Users u INNER JOIN dbo.Roles r ON r.RoleId=u.RoleId WHERE u.UserId=@Id;"
+            Using connection = Database.CreateConnection(), command As New SqlCommand(sql, connection)
+                command.Parameters.Add("@Id", SqlDbType.Int).Value = userId : connection.Open()
+                Using reader = command.ExecuteReader(CommandBehavior.SingleRow)
+                    If Not reader.Read() Then Return Nothing
+                    Return New TeamMemberListItem With {.UserId = reader.GetInt32(0), .RoleId = reader.GetInt32(1), .EmployeeCode = ReadString(reader, 2), .FirstName = reader.GetString(3), .LastName = reader.GetString(4), .Email = reader.GetString(5), .Department = ReadString(reader, 6), .PhoneNumber = ReadString(reader, 7), .IsActive = reader.GetBoolean(8), .RoleName = reader.GetString(9)}
+                End Using
+            End Using
+        End Function
+
+        Public Sub UpdateUser(userId As Integer, roleId As Integer, employeeCode As String, firstName As String, lastName As String, email As String, department As String, phoneNumber As String)
+            If String.IsNullOrWhiteSpace(firstName) OrElse String.IsNullOrWhiteSpace(lastName) OrElse String.IsNullOrWhiteSpace(email) Then Throw New InvalidOperationException("Name and email are required.")
+            Const sql = "UPDATE dbo.Users SET RoleId=@RoleId,EmployeeCode=@Code,FirstName=@FirstName,LastName=@LastName,Email=@Email,Department=@Department,PhoneNumber=@Phone,UpdatedAtUtc=SYSUTCDATETIME() WHERE UserId=@Id; IF @@ROWCOUNT=0 THROW 51000,'User not found.',1;"
+            Using connection = Database.CreateConnection(), command As New SqlCommand(sql, connection)
+                command.Parameters.Add("@Id", SqlDbType.Int).Value = userId : command.Parameters.Add("@RoleId", SqlDbType.Int).Value = roleId : AddString(command, "@Code", 30, employeeCode)
+                command.Parameters.Add("@FirstName", SqlDbType.NVarChar, 80).Value = firstName.Trim() : command.Parameters.Add("@LastName", SqlDbType.NVarChar, 80).Value = lastName.Trim() : command.Parameters.Add("@Email", SqlDbType.NVarChar, 254).Value = email.Trim().ToLowerInvariant()
+                AddString(command, "@Department", 100, department) : AddString(command, "@Phone", 30, phoneNumber) : connection.Open() : command.ExecuteNonQuery()
+            End Using
+        End Sub
+
         Public Function CreateUser(roleId As Integer, employeeCode As String, firstName As String, lastName As String, email As String, passwordHash As String, department As String, phoneNumber As String) As Integer
             Const sql = "INSERT dbo.Users(RoleId,EmployeeCode,FirstName,LastName,Email,PasswordHash,Department,PhoneNumber) OUTPUT INSERTED.UserId VALUES(@RoleId,@Code,@FirstName,@LastName,@Email,@Hash,@Department,@Phone);"
             Using connection = Database.CreateConnection(), command As New SqlCommand(sql, connection)

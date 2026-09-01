@@ -66,7 +66,7 @@ Namespace Data
         End Function
 
         Public Function GetTicketById(ticketId As Integer, viewerUserId As Integer, canViewAll As Boolean) As TicketDetails
-            Const sql = "SELECT t.TicketId, t.TicketNumber, t.Title, t.Description, t.Priority, t.Status, c.Name AS CategoryName, " &
+            Const sql = "SELECT t.TicketId,t.TicketCategoryId,t.AssetId,t.TicketNumber,t.Title,t.Description,t.Priority,t.Status,c.Name AS CategoryName, " &
                         "requester.FirstName + N' ' + requester.LastName AS RequestedByName, requester.Email AS RequestedByEmail, " &
                         "CASE WHEN assignee.UserId IS NULL THEN NULL ELSE assignee.FirstName + N' ' + assignee.LastName END AS AssignedToName, " &
                         "CASE WHEN a.AssetId IS NULL THEN NULL ELSE a.AssetTag + N' — ' + a.Model END AS AssetLabel, t.CreatedAtUtc, t.DueAtUtc " &
@@ -83,7 +83,7 @@ Namespace Data
                     If Not reader.Read() Then Return Nothing
                     Dim dueAtOrdinal = reader.GetOrdinal("DueAtUtc")
                     Return New TicketDetails With {
-                        .TicketId = reader.GetInt32(reader.GetOrdinal("TicketId")), .TicketNumber = reader.GetString(reader.GetOrdinal("TicketNumber")),
+                        .TicketId = reader.GetInt32(reader.GetOrdinal("TicketId")), .TicketCategoryId = reader.GetInt32(reader.GetOrdinal("TicketCategoryId")), .AssetId = ReadNullableInteger(reader, "AssetId"), .TicketNumber = reader.GetString(reader.GetOrdinal("TicketNumber")),
                         .Title = reader.GetString(reader.GetOrdinal("Title")), .Description = reader.GetString(reader.GetOrdinal("Description")),
                         .Priority = reader.GetString(reader.GetOrdinal("Priority")), .Status = reader.GetString(reader.GetOrdinal("Status")),
                         .CategoryName = reader.GetString(reader.GetOrdinal("CategoryName")), .RequestedByName = reader.GetString(reader.GetOrdinal("RequestedByName")),
@@ -119,6 +119,17 @@ Namespace Data
             Const sql = "SELECT u.UserId,u.FirstName+N' '+u.LastName+N' - '+r.Name Label FROM dbo.Users u INNER JOIN dbo.Roles r ON r.RoleId=u.RoleId WHERE u.IsActive=1 AND r.Name IN(N'Administrator',N'ITManager',N'Technician') ORDER BY u.FirstName,u.LastName;"
             Return ReadOptions(sql, "UserId", "Label")
         End Function
+
+        Public Sub UpdateTicket(ticketId As Integer, categoryId As Integer, assetId As Integer?, title As String, description As String, priority As String)
+            If String.IsNullOrWhiteSpace(title) OrElse String.IsNullOrWhiteSpace(description) Then Throw New InvalidOperationException("Title and description are required.")
+            Dim allowed = New String() {"Low", "Medium", "High", "Critical"} : If Not allowed.Contains(priority) Then Throw New InvalidOperationException("Invalid priority.")
+            Const sql = "UPDATE dbo.Tickets SET TicketCategoryId=@CategoryId,AssetId=@AssetId,Title=@Title,Description=@Description,Priority=@Priority,DueAtUtc=DATEADD(HOUR,CASE @Priority WHEN N'Critical' THEN 4 WHEN N'High' THEN 8 WHEN N'Medium' THEN 24 ELSE 72 END,CreatedAtUtc),UpdatedAtUtc=SYSUTCDATETIME() WHERE TicketId=@TicketId; IF @@ROWCOUNT=0 THROW 51000,'Ticket not found.',1;"
+            Using connection = Database.CreateConnection(), command As New SqlCommand(sql, connection)
+                command.Parameters.Add("@TicketId", SqlDbType.Int).Value = ticketId : command.Parameters.Add("@CategoryId", SqlDbType.Int).Value = categoryId : command.Parameters.Add("@AssetId", SqlDbType.Int).Value = If(assetId.HasValue, CType(assetId.Value, Object), DBNull.Value)
+                command.Parameters.Add("@Title", SqlDbType.NVarChar, 180).Value = title.Trim() : command.Parameters.Add("@Description", SqlDbType.NVarChar, -1).Value = description.Trim() : command.Parameters.Add("@Priority", SqlDbType.NVarChar, 20).Value = priority
+                connection.Open() : command.ExecuteNonQuery()
+            End Using
+        End Sub
 
         Public Function GetSlaAlertCount(viewerUserId As Integer, canViewAll As Boolean) As Integer
             Const sql = "SELECT COUNT(1) FROM dbo.Tickets WHERE DueAtUtc<=DATEADD(HOUR,4,SYSUTCDATETIME()) AND Status NOT IN(N'Resolved',N'Closed',N'Cancelled') AND (@CanViewAll=1 OR RequestedByUserId=@UserId);"
@@ -219,6 +230,9 @@ Namespace Data
         End Function
         Private Shared Function ReadNullableDate(reader As SqlDataReader, columnName As String) As DateTime?
             Dim ordinal = reader.GetOrdinal(columnName) : Return If(reader.IsDBNull(ordinal), CType(Nothing, DateTime?), reader.GetDateTime(ordinal))
+        End Function
+        Private Shared Function ReadNullableInteger(reader As SqlDataReader, columnName As String) As Integer?
+            Dim ordinal = reader.GetOrdinal(columnName) : Return If(reader.IsDBNull(ordinal), CType(Nothing, Integer?), reader.GetInt32(ordinal))
         End Function
     End Class
 End Namespace

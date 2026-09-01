@@ -58,7 +58,7 @@ Namespace Data
                 Using reader = command.ExecuteReader(CommandBehavior.SingleRow)
                     If Not reader.Read() Then Return Nothing
                     Return New MaintenanceDetails With {
-                        .MaintenanceInterventionId = interventionId, .AssetId = reader.GetInt32(reader.GetOrdinal("AssetId")), .AssetTag = reader.GetString(reader.GetOrdinal("AssetTag")),
+                        .MaintenanceInterventionId = interventionId, .AssetId = reader.GetInt32(reader.GetOrdinal("AssetId")), .TechnicianUserId = ReadNullableInteger(reader, "TechnicianUserId"), .AssetTag = reader.GetString(reader.GetOrdinal("AssetTag")),
                         .AssetName = reader.GetString(reader.GetOrdinal("AssetName")), .AssetLocation = ReadNullableString(reader, "Location"), .InterventionType = reader.GetString(reader.GetOrdinal("InterventionType")),
                         .Status = reader.GetString(reader.GetOrdinal("Status")), .TechnicianName = ReadNullableString(reader, "TechnicianName"), .Diagnosis = ReadNullableString(reader, "Diagnosis"),
                         .WorkPerformed = ReadNullableString(reader, "WorkPerformed"), .ScheduledAtUtc = ReadNullableDate(reader, "ScheduledAtUtc"), .StartedAtUtc = ReadNullableDate(reader, "StartedAtUtc"),
@@ -96,6 +96,15 @@ Namespace Data
 
         Public Sub StartIntervention(interventionId As Integer)
             ChangeStatus(interventionId, "InProgress", Nothing, Nothing, Nothing)
+        End Sub
+
+        Public Sub UpdateIntervention(interventionId As Integer, technicianUserId As Integer?, interventionType As String, scheduledAtUtc As DateTime?, diagnosis As String, externalProvider As String)
+            Const sql = "UPDATE dbo.MaintenanceInterventions SET TechnicianUserId=@Technician,InterventionType=@Type,ScheduledAtUtc=@Scheduled,Diagnosis=@Diagnosis,ExternalProvider=@Provider,UpdatedAtUtc=SYSUTCDATETIME() WHERE MaintenanceInterventionId=@Id AND Status IN(N'Planned',N'InProgress'); IF @@ROWCOUNT=0 THROW 51000,'Only active interventions can be edited.',1;"
+            Using connection = Database.CreateConnection(), command As New SqlCommand(sql, connection)
+                command.Parameters.Add("@Id", SqlDbType.Int).Value = interventionId : command.Parameters.Add("@Technician", SqlDbType.Int).Value = If(technicianUserId.HasValue, CType(technicianUserId.Value, Object), DBNull.Value) : command.Parameters.Add("@Type", SqlDbType.NVarChar, 30).Value = interventionType
+                command.Parameters.Add("@Scheduled", SqlDbType.DateTime2).Value = If(scheduledAtUtc.HasValue, CType(scheduledAtUtc.Value, Object), DBNull.Value) : AddNullableString(command, "@Diagnosis", -1, diagnosis) : AddNullableString(command, "@Provider", 150, externalProvider)
+                connection.Open() : command.ExecuteNonQuery()
+            End Using
         End Sub
 
         Public Sub CompleteIntervention(interventionId As Integer, diagnosis As String, workPerformed As String, laborCost As Decimal?)
@@ -167,6 +176,9 @@ Namespace Data
         End Function
         Private Shared Function ReadNullableDecimal(reader As SqlDataReader, columnName As String) As Decimal?
             Dim ordinal = reader.GetOrdinal(columnName) : Return If(reader.IsDBNull(ordinal), CType(Nothing, Decimal?), reader.GetDecimal(ordinal))
+        End Function
+        Private Shared Function ReadNullableInteger(reader As SqlDataReader, columnName As String) As Integer?
+            Dim ordinal = reader.GetOrdinal(columnName) : Return If(reader.IsDBNull(ordinal), CType(Nothing, Integer?), reader.GetInt32(ordinal))
         End Function
     End Class
 End Namespace

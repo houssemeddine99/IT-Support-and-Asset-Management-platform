@@ -26,6 +26,7 @@ Partial Public Class AssetDetailsPage
     Protected WithEvents UnassignedPanel As Global.System.Web.UI.WebControls.Panel
     Protected WithEvents ScheduleMaintenanceLink As Global.System.Web.UI.WebControls.HyperLink
     Protected WithEvents AssignLink As Global.System.Web.UI.WebControls.HyperLink
+    Protected WithEvents EditLink As Global.System.Web.UI.WebControls.HyperLink
     Protected WithEvents ReturnButton As Global.System.Web.UI.WebControls.Button
     Protected WithEvents HistoryRepeater As Global.System.Web.UI.WebControls.Repeater
     Protected WithEvents NoHistoryPanel As Global.System.Web.UI.WebControls.Panel

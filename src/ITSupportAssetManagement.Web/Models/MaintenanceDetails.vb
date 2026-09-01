@@ -2,6 +2,7 @@ Namespace Models
     Public NotInheritable Class MaintenanceDetails
         Public Property MaintenanceInterventionId As Integer
         Public Property AssetId As Integer
+        Public Property TechnicianUserId As Integer?
         Public Property AssetTag As String
         Public Property AssetName As String
         Public Property AssetLocation As String

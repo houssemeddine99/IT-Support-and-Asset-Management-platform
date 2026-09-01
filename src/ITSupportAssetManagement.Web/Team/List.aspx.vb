@@ -7,8 +7,12 @@ Public Partial Class TeamListPage
         Dim role = Convert.ToString(Session("RoleName"))
         If role <> "Administrator" AndAlso role <> "ITManager" Then Response.Redirect("~/Default.aspx", False) : Return
         CreateLink.Visible = role = "Administrator"
-        If Not IsPostBack Then If Request.QueryString("created") = "1" Then SuccessMessage.Text = "The team member account was created successfully." : SuccessPanel.Visible = True Else BindTeam()
-        If Not IsPostBack AndAlso SuccessPanel.Visible Then BindTeam()
+        ViewState("CanEdit") = role = "Administrator"
+        If Not IsPostBack Then
+            If Request.QueryString("created") = "1" Then SuccessMessage.Text = "The team member account was created successfully." : SuccessPanel.Visible = True
+            If Request.QueryString("updated") = "1" Then SuccessMessage.Text = "The team member was updated successfully." : SuccessPanel.Visible = True
+            BindTeam()
+        End If
     End Sub
     Protected Sub FilterButton_Click(sender As Object, e As EventArgs) Handles FilterButton.Click
         BindTeam()
@@ -26,6 +30,9 @@ Public Partial Class TeamListPage
     End Function
     Protected Function CanManageUser(value As Object) As Boolean
         Return Convert.ToString(Session("RoleName")) = "Administrator" AndAlso Convert.ToInt32(value) <> Convert.ToInt32(Session("UserId"))
+    End Function
+    Protected Function CanEditUsers() As Boolean
+        Return Convert.ToBoolean(ViewState("CanEdit"))
     End Function
     Protected Shared Function GetToggleConfirmation(value As Object) As String
         Return If(Convert.ToBoolean(value), "return confirm('Disable this account?');", String.Empty)

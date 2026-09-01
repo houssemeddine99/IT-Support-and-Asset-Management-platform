@@ -1,6 +1,7 @@
 Namespace Models
     Public NotInheritable Class AssetDetails
         Public Property AssetId As Integer
+        Public Property AssetCategoryId As Integer
         Public Property AssetTag As String
         Public Property CategoryName As String
         Public Property Manufacturer As String
@@ -17,4 +18,3 @@ Namespace Models
         Public Property CreatedAtUtc As DateTime
     End Class
 End Namespace
-

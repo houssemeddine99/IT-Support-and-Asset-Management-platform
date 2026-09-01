@@ -84,7 +84,7 @@ Namespace Data
         End Function
 
         Public Function GetAssetById(assetId As Integer) As AssetDetails
-            Const sql = "SELECT a.AssetId, a.AssetTag, c.Name AS CategoryName, a.Manufacturer, a.Model, a.SerialNumber, a.PurchaseDate, a.PurchaseCost, a.WarrantyEndDate, a.Location, a.Status, a.Notes, a.CreatedAtUtc, " &
+            Const sql = "SELECT a.AssetId,a.AssetCategoryId,a.AssetTag,c.Name AS CategoryName,a.Manufacturer,a.Model,a.SerialNumber,a.PurchaseDate,a.PurchaseCost,a.WarrantyEndDate,a.Location,a.Status,a.Notes,a.CreatedAtUtc, " &
                         "CASE WHEN u.UserId IS NULL THEN NULL ELSE u.FirstName + N' ' + u.LastName END AS AssignedToName, aa.AssignedAtUtc " &
                         "FROM dbo.Assets a INNER JOIN dbo.AssetCategories c ON c.AssetCategoryId = a.AssetCategoryId " &
                         "LEFT JOIN dbo.AssetAssignments aa ON aa.AssetId = a.AssetId AND aa.ReturnedAtUtc IS NULL LEFT JOIN dbo.Users u ON u.UserId = aa.UserId WHERE a.AssetId = @AssetId;"
@@ -94,7 +94,7 @@ Namespace Data
                 Using reader = command.ExecuteReader(CommandBehavior.SingleRow)
                     If Not reader.Read() Then Return Nothing
                     Return New AssetDetails With {
-                        .AssetId = reader.GetInt32(reader.GetOrdinal("AssetId")), .AssetTag = reader.GetString(reader.GetOrdinal("AssetTag")),
+                        .AssetId = reader.GetInt32(reader.GetOrdinal("AssetId")), .AssetCategoryId = reader.GetInt32(reader.GetOrdinal("AssetCategoryId")), .AssetTag = reader.GetString(reader.GetOrdinal("AssetTag")),
                         .CategoryName = reader.GetString(reader.GetOrdinal("CategoryName")), .Manufacturer = ReadNullableString(reader, "Manufacturer"),
                         .Model = reader.GetString(reader.GetOrdinal("Model")), .SerialNumber = ReadNullableString(reader, "SerialNumber"),
                         .PurchaseDate = ReadNullableDate(reader, "PurchaseDate"), .PurchaseCost = ReadNullableDecimal(reader, "PurchaseCost"),
@@ -127,6 +127,19 @@ Namespace Data
             End Using
             Return results
         End Function
+
+        Public Sub UpdateAsset(assetId As Integer, categoryId As Integer, assetTag As String, serialNumber As String, manufacturer As String, model As String, purchaseDate As DateTime?, purchaseCost As Decimal?, warrantyEndDate As DateTime?, location As String, status As String, notes As String)
+            If String.IsNullOrWhiteSpace(assetTag) OrElse String.IsNullOrWhiteSpace(model) Then Throw New InvalidOperationException("Asset tag and model are required.")
+            Const sql = "UPDATE dbo.Assets SET AssetCategoryId=@CategoryId,AssetTag=@Tag,SerialNumber=@Serial,Manufacturer=@Manufacturer,Model=@Model,PurchaseDate=@PurchaseDate,PurchaseCost=@Cost,WarrantyEndDate=@Warranty,Location=@Location,Status=@Status,Notes=@Notes,UpdatedAtUtc=SYSUTCDATETIME() WHERE AssetId=@Id; IF @@ROWCOUNT=0 THROW 51000,'Asset not found.',1;"
+            Using connection = Database.CreateConnection(), command As New SqlCommand(sql, connection)
+                command.Parameters.Add("@Id", SqlDbType.Int).Value = assetId : command.Parameters.Add("@CategoryId", SqlDbType.Int).Value = categoryId : command.Parameters.Add("@Tag", SqlDbType.NVarChar, 40).Value = assetTag.Trim().ToUpperInvariant()
+                AddNullableString(command, "@Serial", 100, serialNumber) : AddNullableString(command, "@Manufacturer", 80, manufacturer) : command.Parameters.Add("@Model", SqlDbType.NVarChar, 120).Value = model.Trim()
+                command.Parameters.Add("@PurchaseDate", SqlDbType.Date).Value = If(purchaseDate.HasValue, CType(purchaseDate.Value.Date, Object), DBNull.Value)
+                Dim cost = command.Parameters.Add("@Cost", SqlDbType.Decimal) : cost.Precision = 18 : cost.Scale = 2 : cost.Value = If(purchaseCost.HasValue, CType(purchaseCost.Value, Object), DBNull.Value)
+                command.Parameters.Add("@Warranty", SqlDbType.Date).Value = If(warrantyEndDate.HasValue, CType(warrantyEndDate.Value.Date, Object), DBNull.Value) : AddNullableString(command, "@Location", 150, location)
+                command.Parameters.Add("@Status", SqlDbType.NVarChar, 30).Value = status : AddNullableString(command, "@Notes", 1000, notes) : connection.Open() : command.ExecuteNonQuery()
+            End Using
+        End Sub
 
         Public Function GetMaintenanceHistory(assetId As Integer) As List(Of MaintenanceListItem)
             Const sql = "SELECT m.MaintenanceInterventionId,m.AssetId,a.AssetTag,LTRIM(RTRIM(COALESCE(a.Manufacturer + N' ',N'') + a.Model)) AS AssetName,m.InterventionType,m.Status,m.ScheduledAtUtc,CASE WHEN u.UserId IS NULL THEN NULL ELSE u.FirstName + N' ' + u.LastName END AS TechnicianName FROM dbo.MaintenanceInterventions m INNER JOIN dbo.Assets a ON a.AssetId=m.AssetId LEFT JOIN dbo.Users u ON u.UserId=m.TechnicianUserId WHERE m.AssetId=@AssetId ORDER BY COALESCE(m.ScheduledAtUtc,m.CreatedAtUtc) DESC;"

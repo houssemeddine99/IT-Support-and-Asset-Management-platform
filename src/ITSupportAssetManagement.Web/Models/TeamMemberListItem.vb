@@ -1,6 +1,7 @@
 Namespace Models
     Public NotInheritable Class TeamMemberListItem
         Public Property UserId As Integer
+        Public Property RoleId As Integer
         Public Property EmployeeCode As String
         Public Property FirstName As String
         Public Property LastName As String

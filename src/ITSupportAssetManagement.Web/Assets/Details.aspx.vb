@@ -30,6 +30,7 @@ Public Partial Class AssetDetailsPage
             MaintenanceRepeater.DataSource = maintenanceHistory : MaintenanceRepeater.DataBind() : NoMaintenancePanel.Visible = maintenanceHistory.Count = 0
             Dim roleName = Convert.ToString(Session("RoleName")), canManage = roleName = "Administrator" OrElse roleName = "ITManager"
             AssignLink.NavigateUrl = "Assign.aspx?id=" & assetId.ToString() : AssignLink.Visible = canManage AndAlso asset.Status = "Available"
+            EditLink.NavigateUrl = "Edit.aspx?id=" & assetId.ToString() : EditLink.Visible = canManage
             ScheduleMaintenanceLink.NavigateUrl = "~/Maintenance/Create.aspx?assetId=" & assetId.ToString()
             ScheduleMaintenanceLink.Visible = canManage OrElse roleName = "Technician"
             MaintenanceListLink.NavigateUrl = "~/Maintenance/List.aspx?search=" & Server.UrlEncode(asset.AssetTag)
@@ -37,6 +38,7 @@ Public Partial Class AssetDetailsPage
             If Request.QueryString("created") = "1" Then SuccessMessage.Text = "The asset was registered successfully." : SuccessPanel.Visible = True
             If Request.QueryString("assigned") = "1" Then SuccessMessage.Text = "The asset assignment was recorded successfully." : SuccessPanel.Visible = True
             If Request.QueryString("returned") = "1" Then SuccessMessage.Text = "The asset return was recorded successfully." : SuccessPanel.Visible = True
+            If Request.QueryString("updated") = "1" Then SuccessMessage.Text = "The asset was updated successfully." : SuccessPanel.Visible = True
             DetailsPanel.Visible = True
         Catch ex As SqlException
             ShowNotFound()

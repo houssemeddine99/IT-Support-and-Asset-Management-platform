@@ -7,6 +7,7 @@ Partial Public Class TicketDetailsPage
     Protected WithEvents ErrorPanel As Global.System.Web.UI.WebControls.Panel
     Protected WithEvents ErrorMessage As Global.System.Web.UI.WebControls.Literal
     Protected WithEvents TicketTitle As Global.System.Web.UI.WebControls.Literal
+    Protected WithEvents EditLink As Global.System.Web.UI.WebControls.HyperLink
     Protected WithEvents PriorityBadge As Global.System.Web.UI.WebControls.Label
     Protected WithEvents TicketNumber As Global.System.Web.UI.WebControls.Literal
     Protected WithEvents CreatedDate As Global.System.Web.UI.WebControls.Literal

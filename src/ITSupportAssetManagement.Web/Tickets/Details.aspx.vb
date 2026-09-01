@@ -23,6 +23,7 @@ Public Partial Class TicketDetailsPage
             RequesterName.Text = Server.HtmlEncode(ticket.RequestedByName) : RequesterEmail.Text = Server.HtmlEncode(ticket.RequestedByEmail)
             Dim names = ticket.RequestedByName.Split(" "c) : RequesterInitials.Text = Server.HtmlEncode(String.Join(String.Empty, names.Where(Function(value) value.Length > 0).Take(2).Select(Function(value) value.Substring(0, 1))).ToUpperInvariant())
             WorkflowPanel.Visible = canManage : InternalInput.Visible = canManage
+            EditLink.NavigateUrl = "Edit.aspx?id=" & ticketId.ToString() : EditLink.Visible = canManage
             If canManage Then
                 TechnicianInput.DataSource = _tickets.GetAssignableTechnicians() : TechnicianInput.DataTextField = "Label" : TechnicianInput.DataValueField = "Id" : TechnicianInput.DataBind() : TechnicianInput.Items.Insert(0, New ListItem("Select technician", String.Empty)) : StatusInput.SelectedValue = ticket.Status
             End If

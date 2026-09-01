@@ -4,6 +4,7 @@ Partial Public Class MaintenanceDetailsPage
     Protected WithEvents NotFoundPanel As Global.System.Web.UI.WebControls.Panel
     Protected WithEvents DetailsPanel As Global.System.Web.UI.WebControls.Panel
     Protected WithEvents InterventionNumber As Global.System.Web.UI.WebControls.Literal
+    Protected WithEvents EditLink As Global.System.Web.UI.WebControls.HyperLink
     Protected WithEvents StatusBadge As Global.System.Web.UI.WebControls.Label
     Protected WithEvents InterventionType As Global.System.Web.UI.WebControls.Literal
     Protected WithEvents HeadingAsset As Global.System.Web.UI.WebControls.Literal

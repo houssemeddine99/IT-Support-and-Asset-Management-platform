@@ -25,6 +25,7 @@ Public Partial Class MaintenanceDetailsPage
             Dim role = Convert.ToString(Session("RoleName")), canExecute = role = "Administrator" OrElse role = "ITManager" OrElse role = "Technician"
             StartButton.Visible = canExecute AndAlso item.Status = "Planned" : CompletionPanel.Visible = canExecute AndAlso item.Status = "InProgress" : CancelButton.Visible = canExecute AndAlso (item.Status = "Planned" OrElse item.Status = "InProgress") : ActionsPanel.Visible = StartButton.Visible OrElse CancelButton.Visible
             AddPartPanel.Visible = canExecute AndAlso (item.Status = "Planned" OrElse item.Status = "InProgress")
+            EditLink.NavigateUrl = "Edit.aspx?id=" & interventionId.ToString() : EditLink.Visible = canExecute AndAlso (item.Status = "Planned" OrElse item.Status = "InProgress")
             If CompletionPanel.Visible Then DiagnosisInput.Text = item.Diagnosis
             If Request.QueryString("created") = "1" Then SuccessMessage.Text = "The intervention was planned successfully." : SuccessPanel.Visible = True
             If Request.QueryString("updated") = "1" Then SuccessMessage.Text = "The intervention workflow was updated successfully." : SuccessPanel.Visible = True
