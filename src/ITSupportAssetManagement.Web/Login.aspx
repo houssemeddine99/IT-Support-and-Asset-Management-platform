@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&amp;family=Manrope:wght@700;800&amp;display=swap" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
-    <link href="Content/auth.css?v=20260901.5" rel="stylesheet" />
+    <link href="Content/auth.css?v=20260901.6" rel="stylesheet" />
 </head>
 <body>
     <form id="LoginForm" runat="server" class="auth-shell login-template">
@@ -23,6 +23,7 @@
             <div class="auth-card">
                 <div class="mobile-brand"><img src="Content/Images/draexlmaier-logo.png" alt="DRÄXLMAIER" /><small>Siliana IT Hub</small></div>
                 <p class="eyebrow">Siliana IT Hub</p><h2>Welcome back!</h2><p class="auth-intro">Sign in to your account to continue</p>
+                <asp:Panel ID="SuccessPanel" runat="server" CssClass="auth-alert success" Visible="false"><i class="bi bi-check-circle"></i><asp:Literal ID="SuccessMessage" runat="server" /></asp:Panel>
                 <asp:Panel ID="ErrorPanel" runat="server" CssClass="auth-alert" Visible="false"><i class="bi bi-exclamation-circle"></i><asp:Literal ID="ErrorMessage" runat="server" /></asp:Panel>
                 <div class="social-signin">
                     <button type="button" class="google-btn"><i class="bi bi-google"></i> Continue with Google</button>

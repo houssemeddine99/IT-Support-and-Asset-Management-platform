@@ -34,6 +34,24 @@ Namespace Data
             End Using
         End Function
 
+        Public Function GetActivePasswordHash(userId As Integer) As String
+            Const sql = "SELECT PasswordHash FROM dbo.Users WHERE UserId=@UserId AND IsActive=1;"
+            Using connection = Database.CreateConnection(), command As New SqlCommand(sql, connection)
+                command.Parameters.Add("@UserId", SqlDbType.Int).Value = userId
+                connection.Open()
+                Return Convert.ToString(command.ExecuteScalar())
+            End Using
+        End Function
+
+        Public Sub UpdatePassword(userId As Integer, passwordHash As String)
+            Const sql = "UPDATE dbo.Users SET PasswordHash=@PasswordHash,UpdatedAtUtc=SYSUTCDATETIME() WHERE UserId=@UserId AND IsActive=1; IF @@ROWCOUNT=0 THROW 51000,'Active user not found.',1;"
+            Using connection = Database.CreateConnection(), command As New SqlCommand(sql, connection)
+                command.Parameters.Add("@UserId", SqlDbType.Int).Value = userId
+                command.Parameters.Add("@PasswordHash", SqlDbType.NVarChar, 500).Value = passwordHash
+                connection.Open() : command.ExecuteNonQuery()
+            End Using
+        End Sub
+
         Public Function CreateFirstAdministrator(firstName As String, lastName As String, email As String, passwordHash As String) As Integer
             Using connection = Database.CreateConnection()
                 connection.Open()

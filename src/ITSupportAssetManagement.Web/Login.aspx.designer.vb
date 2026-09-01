@@ -1,6 +1,8 @@
 Option Strict On
 Option Explicit On
 Partial Public Class LoginPage
+    Protected WithEvents SuccessPanel As Global.System.Web.UI.WebControls.Panel
+    Protected WithEvents SuccessMessage As Global.System.Web.UI.WebControls.Literal
     Protected WithEvents LoginForm As Global.System.Web.UI.HtmlControls.HtmlForm
     Protected WithEvents ErrorPanel As Global.System.Web.UI.WebControls.Panel
     Protected WithEvents ErrorMessage As Global.System.Web.UI.WebControls.Literal
@@ -11,4 +13,3 @@ Partial Public Class LoginPage
     Protected WithEvents RememberInput As Global.System.Web.UI.WebControls.CheckBox
     Protected WithEvents LoginButton As Global.System.Web.UI.WebControls.Button
 End Class
-

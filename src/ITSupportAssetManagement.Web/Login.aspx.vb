@@ -9,6 +9,10 @@ Public Partial Class LoginPage
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         If Request.IsAuthenticated Then Response.Redirect("~/Default.aspx", False)
         If Not IsPostBack Then
+            If Request.QueryString("passwordChanged") = "1" Then
+                SuccessMessage.Text = "Password changed successfully. Sign in with your new password."
+                SuccessPanel.Visible = True
+            End If
             Dim anyUsers As Boolean = False
             Dim databaseError As SqlException = Nothing
             If TryReadUserState(anyUsers, databaseError) Then

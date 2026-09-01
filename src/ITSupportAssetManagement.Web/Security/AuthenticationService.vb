@@ -11,6 +11,12 @@ Namespace Security
             If user Is Nothing OrElse Not PasswordHasher.VerifyPassword(password, storedHash) Then Return Nothing
             Return user
         End Function
+
+        Public Function ChangePassword(userId As Integer, currentPassword As String, newPassword As String) As Boolean
+            Dim storedHash As String = _users.GetActivePasswordHash(userId)
+            If Not PasswordHasher.VerifyPassword(currentPassword, storedHash) Then Return False
+            _users.UpdatePassword(userId, PasswordHasher.HashPassword(newPassword))
+            Return True
+        End Function
     End Class
 End Namespace
-

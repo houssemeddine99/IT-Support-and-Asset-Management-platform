@@ -52,6 +52,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Default.aspx" />
+    <Content Include="Account\Profile.aspx" />
     <Content Include="Assets\Create.aspx" />
     <Content Include="Assets\Assign.aspx" />
     <Content Include="Assets\Details.aspx" />
@@ -95,6 +96,8 @@
     <Compile Include="Default.aspx.designer.vb">
       <DependentUpon>Default.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Account\Profile.aspx.vb"><DependentUpon>Profile.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
+    <Compile Include="Account\Profile.aspx.designer.vb"><DependentUpon>Profile.aspx</DependentUpon></Compile>
     <Compile Include="Data\Database.vb" />
     <Compile Include="Data\DashboardRepository.vb" />
     <Compile Include="Data\MaintenanceRepository.vb" />
