@@ -43,6 +43,6 @@
             </div>
         </div>
     </form>
-    <script src="<%= ResolveUrl("~/Scripts/app.js") %>"></script>
+    <script src="<%= ResolveUrl("~/Scripts/app.js?v=20260901.2") %>"></script>
 </body>
 </html>

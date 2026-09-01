@@ -9,6 +9,27 @@
     }
     if (menuButton) { menuButton.addEventListener("click", function () { setSidebar(!body.classList.contains("sidebar-open")); }); }
     if (sidebarScrim) { sidebarScrim.addEventListener("click", function () { setSidebar(false); }); }
+    var globalSearch = document.querySelector(".search-box[data-search-url]");
+    if (globalSearch) {
+        var globalSearchInput = globalSearch.querySelector("input[type='search']");
+        var globalSearchButton = globalSearch.querySelector(".search-submit");
+        function openSearch(event) {
+            if (event) { event.preventDefault(); }
+            var query = globalSearchInput ? globalSearchInput.value.trim() : "";
+            if (!query) {
+                if (globalSearchInput) { globalSearchInput.focus(); }
+                return false;
+            }
+            window.location.assign(globalSearch.getAttribute("data-search-url") + "?q=" + encodeURIComponent(query));
+            return false;
+        }
+        if (globalSearchButton) { globalSearchButton.addEventListener("click", openSearch); }
+        if (globalSearchInput) {
+            globalSearchInput.addEventListener("keydown", function (event) {
+                if (event.key === "Enter") { openSearch(event); }
+            });
+        }
+    }
     Array.prototype.forEach.call(document.querySelectorAll(".sidebar-nav .nav-link"), function (link) {
         var target = link.getAttribute("href");
         if (!target || target.charAt(0) === "#") { return; }
