@@ -17,4 +17,7 @@ Partial Public Class ReportsOverviewPage
     Protected WithEvents NoTicketData As Global.System.Web.UI.WebControls.Panel
     Protected WithEvents NoAssetData As Global.System.Web.UI.WebControls.Panel
     Protected WithEvents NoMaintenanceData As Global.System.Web.UI.WebControls.Panel
+    Protected WithEvents TicketTrendRepeater As Global.System.Web.UI.WebControls.Repeater
+    Protected WithEvents WorkloadRepeater As Global.System.Web.UI.WebControls.Repeater
+    Protected WithEvents NoWorkloadData As Global.System.Web.UI.WebControls.Panel
 End Class

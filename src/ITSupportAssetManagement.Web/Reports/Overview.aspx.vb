@@ -18,6 +18,8 @@ Public Partial Class ReportsOverviewPage
             TicketMetricsRepeater.DataSource = report.TicketsByStatus : TicketMetricsRepeater.DataBind() : NoTicketData.Visible = report.TicketsByStatus.Count = 0
             AssetMetricsRepeater.DataSource = report.AssetsByStatus : AssetMetricsRepeater.DataBind() : NoAssetData.Visible = report.AssetsByStatus.Count = 0
             MaintenanceMetricsRepeater.DataSource = report.MaintenanceByType : MaintenanceMetricsRepeater.DataBind() : NoMaintenanceData.Visible = report.MaintenanceByType.Count = 0
+            TicketTrendRepeater.DataSource = report.TicketTrend : TicketTrendRepeater.DataBind()
+            WorkloadRepeater.DataSource = report.TechnicianWorkload : WorkloadRepeater.DataBind() : NoWorkloadData.Visible = report.TechnicianWorkload.Count = 0
         Catch ex As SqlException
             ErrorMessage.Text = "The report could not be generated from the database." : ErrorPanel.Visible = True : ExportButton.Enabled = False
         End Try
@@ -28,6 +30,8 @@ Public Partial Class ReportsOverviewPage
             csv.AppendLine("Siliana IT Hub Operations Report").AppendLine("Generated," & DateTime.Now.ToString("yyyy-MM-dd HH:mm")).AppendLine()
             csv.AppendLine("Indicator,Value").AppendLine("Total tickets," & report.TotalTickets).AppendLine("Open tickets," & report.OpenTickets).AppendLine("Resolved tickets," & report.ResolvedTickets).AppendLine("Resolution rate," & report.ResolutionRate.ToString(Globalization.CultureInfo.InvariantCulture) & "%").AppendLine("Total assets," & report.TotalAssets).AppendLine("Active maintenance," & report.ActiveMaintenance).AppendLine("Maintenance labor cost," & report.TotalMaintenanceCost.ToString(Globalization.CultureInfo.InvariantCulture)).AppendLine()
             AppendMetrics(csv, "Ticket status", report.TicketsByStatus) : AppendMetrics(csv, "Asset status", report.AssetsByStatus) : AppendMetrics(csv, "Maintenance type", report.MaintenanceByType)
+            csv.AppendLine("Technician,Open tickets,Active maintenance")
+            For Each row In report.TechnicianWorkload : csv.AppendLine(EscapeCsv(row.DisplayName) & "," & row.OpenTickets & "," & row.ActiveMaintenance) : Next
             Response.Clear() : Response.ContentType = "text/csv" : Response.ContentEncoding = Encoding.UTF8 : Response.AddHeader("Content-Disposition", "attachment; filename=Siliana-IT-Report-" & DateTime.Now.ToString("yyyyMMdd") & ".csv") : Response.Write(ChrW(&HFEFF) & csv.ToString()) : Response.Flush() : HttpContext.Current.ApplicationInstance.CompleteRequest()
         Catch ex As SqlException
             ErrorMessage.Text = "The CSV report could not be generated." : ErrorPanel.Visible = True
@@ -40,5 +44,9 @@ Public Partial Class ReportsOverviewPage
     End Sub
     Private Shared Function EscapeCsv(value As String) As String
         Return """" & value.Replace("""", """""") & """"
+    End Function
+    Protected Function Initials(value As Object) As String
+        Dim parts = Convert.ToString(value).Split(" "c)
+        Return String.Join(String.Empty, parts.Where(Function(part) part.Length > 0).Take(2).Select(Function(part) part.Substring(0,1))).ToUpperInvariant()
     End Function
 End Class
