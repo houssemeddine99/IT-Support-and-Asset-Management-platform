@@ -4,6 +4,12 @@ Public Partial Class SiteMaster
     Inherits System.Web.UI.MasterPage
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        Dim path As String = Request.AppRelativeCurrentExecutionFilePath
+        If Convert.ToBoolean(If(Session("MustChangePassword"), False)) AndAlso Not path.Equals("~/Account/Profile.aspx", StringComparison.OrdinalIgnoreCase) Then
+            Response.Redirect(ResolveUrl("~/Account/Profile.aspx?required=1"), False)
+            Context.ApplicationInstance.CompleteRequest()
+            Return
+        End If
         GlobalSearchPanel.Attributes("data-search-url") = ResolveUrl("~/Search/Index.aspx")
         UserInitials.Text = Server.HtmlEncode(Convert.ToString(Session("Initials")))
         UserDisplayName.Text = Server.HtmlEncode(Convert.ToString(Session("DisplayName")))

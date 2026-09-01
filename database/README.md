@@ -9,4 +9,4 @@ The application uses SQL Server. The initial migration creates the user, ticket,
 3. Select that database and execute `001_initial_schema.sql`, followed by each numbered migration in order.
 4. Copy the `Web.config.example` connection string into `Web.config` and set the correct SQL Server instance.
 
-The migration is transactional and safe to execute again. It inserts reference roles and categories only when their tables are empty. It never creates a default user or stores a password.
+The migrations are transactional and safe to execute again. They insert reference roles and categories only when their tables are empty. They never create a default user or store a plaintext password. Migration `005` makes administrator-issued passwords temporary and forces the employee to replace them after signing in.

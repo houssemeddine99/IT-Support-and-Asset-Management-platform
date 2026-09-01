@@ -5,6 +5,7 @@ Namespace Models
         Public Property LastName As String
         Public Property Email As String
         Public Property RoleName As String
+        Public Property MustChangePassword As Boolean
 
         Public ReadOnly Property DisplayName As String
             Get
@@ -21,4 +22,3 @@ Namespace Models
         End Property
     End Class
 End Namespace
-

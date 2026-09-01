@@ -121,3 +121,4 @@ html{background:var(--canvas);scrollbar-color:#a9b4c7 transparent;scrollbar-widt
 
 /* Administrator-assisted account recovery */
 .admin-reset-card{margin-top:18px}.reset-warning{display:flex;align-items:flex-start;gap:9px;padding:12px 14px;border:1px solid #f2dfbd;border-radius:9px;background:#fffaf0;color:#8b651d;font-size:8px;line-height:1.5}.reset-warning i{color:var(--orange);font-size:12px}.admin-reset-card .edit-actions{justify-content:flex-end}.dark-workspace .reset-warning{border-color:#49391f;background:#17182a;color:#d5bd8f}
+.page-alert.warning{border-color:#e7c66f;background:#fff8df;color:#8a6512}.dark-workspace .page-alert.warning{border-color:#594720;background:#201b0d;color:#f0ce77}

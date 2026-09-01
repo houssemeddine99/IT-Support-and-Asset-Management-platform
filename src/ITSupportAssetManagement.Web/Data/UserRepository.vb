@@ -13,7 +13,7 @@ Namespace Data
         End Function
 
         Public Function FindActiveByEmail(email As String, ByRef passwordHash As String) As AuthenticatedUser
-            Const sql = "SELECT u.UserId, u.FirstName, u.LastName, u.Email, u.PasswordHash, r.Name AS RoleName " &
+            Const sql = "SELECT u.UserId, u.FirstName, u.LastName, u.Email, u.PasswordHash, r.Name AS RoleName, u.MustChangePassword " &
                         "FROM dbo.Users u INNER JOIN dbo.Roles r ON r.RoleId = u.RoleId " &
                         "WHERE u.Email = @Email AND u.IsActive = 1;"
 
@@ -28,7 +28,8 @@ Namespace Data
                         .FirstName = reader.GetString(reader.GetOrdinal("FirstName")),
                         .LastName = reader.GetString(reader.GetOrdinal("LastName")),
                         .Email = reader.GetString(reader.GetOrdinal("Email")),
-                        .RoleName = reader.GetString(reader.GetOrdinal("RoleName"))
+                        .RoleName = reader.GetString(reader.GetOrdinal("RoleName")),
+                        .MustChangePassword = reader.GetBoolean(reader.GetOrdinal("MustChangePassword"))
                     }
                 End Using
             End Using
@@ -43,11 +44,12 @@ Namespace Data
             End Using
         End Function
 
-        Public Sub UpdatePassword(userId As Integer, passwordHash As String)
-            Const sql = "UPDATE dbo.Users SET PasswordHash=@PasswordHash,UpdatedAtUtc=SYSUTCDATETIME() WHERE UserId=@UserId AND IsActive=1; IF @@ROWCOUNT=0 THROW 51000,'Active user not found.',1;"
+        Public Sub UpdatePassword(userId As Integer, passwordHash As String, Optional mustChangePassword As Boolean = False)
+            Const sql = "UPDATE dbo.Users SET PasswordHash=@PasswordHash,MustChangePassword=@MustChangePassword,UpdatedAtUtc=SYSUTCDATETIME() WHERE UserId=@UserId AND IsActive=1; IF @@ROWCOUNT=0 THROW 51000,'Active user not found.',1;"
             Using connection = Database.CreateConnection(), command As New SqlCommand(sql, connection)
                 command.Parameters.Add("@UserId", SqlDbType.Int).Value = userId
                 command.Parameters.Add("@PasswordHash", SqlDbType.NVarChar, 500).Value = passwordHash
+                command.Parameters.Add("@MustChangePassword", SqlDbType.Bit).Value = mustChangePassword
                 connection.Open() : command.ExecuteNonQuery()
             End Using
         End Sub
@@ -148,7 +150,7 @@ Namespace Data
         End Sub
 
         Public Function CreateUser(roleId As Integer, employeeCode As String, firstName As String, lastName As String, email As String, passwordHash As String, department As String, phoneNumber As String) As Integer
-            Const sql = "INSERT dbo.Users(RoleId,EmployeeCode,FirstName,LastName,Email,PasswordHash,Department,PhoneNumber) OUTPUT INSERTED.UserId VALUES(@RoleId,@Code,@FirstName,@LastName,@Email,@Hash,@Department,@Phone);"
+            Const sql = "INSERT dbo.Users(RoleId,EmployeeCode,FirstName,LastName,Email,PasswordHash,Department,PhoneNumber,MustChangePassword) OUTPUT INSERTED.UserId VALUES(@RoleId,@Code,@FirstName,@LastName,@Email,@Hash,@Department,@Phone,1);"
             Using connection = Database.CreateConnection(), command As New SqlCommand(sql, connection)
                 command.Parameters.Add("@RoleId", SqlDbType.Int).Value = roleId : AddString(command, "@Code", 30, employeeCode)
                 command.Parameters.Add("@FirstName", SqlDbType.NVarChar, 80).Value = firstName.Trim() : command.Parameters.Add("@LastName", SqlDbType.NVarChar, 80).Value = lastName.Trim()

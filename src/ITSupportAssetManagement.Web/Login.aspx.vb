@@ -38,7 +38,14 @@ Public Partial Class LoginPage
             Session("DisplayName") = user.DisplayName
             Session("Initials") = user.Initials
             Session("RoleName") = user.RoleName
-            FormsAuthentication.RedirectFromLoginPage(user.Email, RememberInput.Checked)
+            Session("MustChangePassword") = user.MustChangePassword
+            If user.MustChangePassword Then
+                FormsAuthentication.SetAuthCookie(user.Email, RememberInput.Checked)
+                Response.Redirect("~/Account/Profile.aspx?required=1", False)
+                Context.ApplicationInstance.CompleteRequest()
+            Else
+                FormsAuthentication.RedirectFromLoginPage(user.Email, RememberInput.Checked)
+            End If
         Catch ex As SqlException
             ShowError("Sign-in is temporarily unavailable. Check the database connection and try again.")
         End Try

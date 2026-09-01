@@ -2,6 +2,7 @@ Option Strict On
 Option Explicit On
 
 Public Partial Class AccountProfilePage
+    Protected WithEvents RequiredPasswordPanel As Global.System.Web.UI.WebControls.Panel
     Protected WithEvents ErrorPanel As Global.System.Web.UI.WebControls.Panel
     Protected WithEvents ErrorMessage As Global.System.Web.UI.WebControls.Literal
     Protected WithEvents InitialsText As Global.System.Web.UI.WebControls.Literal

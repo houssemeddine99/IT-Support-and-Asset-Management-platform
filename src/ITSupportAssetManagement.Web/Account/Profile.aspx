@@ -1,7 +1,7 @@
 <%@ Page Title="My account" Language="VB" MasterPageFile="~/Site.Master" AutoEventWireup="false" CodeBehind="Profile.aspx.vb" Inherits="ITSupportAssetManagement.Web.AccountProfilePage" %>
 <asp:Content ID="AccountContent" ContentPlaceHolderID="MainContent" runat="server">
     <div class="page-heading account-heading"><div><p class="eyebrow"><i class="bi bi-shield-lock"></i> Personal security</p><h1>My account</h1><p>Review your workplace identity and protect access to the Siliana IT Hub.</p></div></div>
-    <asp:Panel ID="ErrorPanel" runat="server" CssClass="page-alert error" Visible="false"><i class="bi bi-exclamation-circle"></i><asp:Literal ID="ErrorMessage" runat="server" /></asp:Panel>
+    <asp:Panel ID="RequiredPasswordPanel" runat="server" CssClass="page-alert warning" Visible="false"><i class="bi bi-shield-exclamation"></i><span>Your administrator issued a temporary password. Create your own password before continuing.</span></asp:Panel><asp:Panel ID="ErrorPanel" runat="server" CssClass="page-alert error" Visible="false"><i class="bi bi-exclamation-circle"></i><asp:Literal ID="ErrorMessage" runat="server" /></asp:Panel>
     <div class="account-grid">
         <aside class="panel account-card">
             <div class="account-identity"><span class="account-avatar"><asp:Literal ID="InitialsText" runat="server" /></span><div><small>Authenticated account</small><h2><asp:Literal ID="DisplayNameText" runat="server" /></h2><span><asp:Literal ID="RoleText" runat="server" /></span></div></div>

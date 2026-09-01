@@ -36,10 +36,10 @@ Public Partial Class TeamEditPage
         Try
             Dim user = _users.GetTeamMemberById(targetUserId)
             If user Is Nothing OrElse Not user.IsActive Then ShowError("Only an active employee account can be reset.") : Return
-            _users.UpdatePassword(targetUserId, PasswordHasher.HashPassword(TemporaryPasswordInput.Text))
+            _users.UpdatePassword(targetUserId, PasswordHasher.HashPassword(TemporaryPasswordInput.Text), True)
             AuditRepository.Record("Reset password", "User", targetUserId.ToString(), "Administrator reset the password for " & user.DisplayName)
             TemporaryPasswordInput.Text = String.Empty : ConfirmTemporaryPasswordInput.Text = String.Empty
-            SuccessMessage.Text = "Temporary password created for " & Server.HtmlEncode(user.DisplayName) & ". Share it through an approved private channel."
+            SuccessMessage.Text = "Temporary password created for " & Server.HtmlEncode(user.DisplayName) & ". The employee must replace it at the next sign-in."
             SuccessPanel.Visible = True : ErrorPanel.Visible = False
         Catch ex As SqlException
             ShowError("The employee password could not be reset.")

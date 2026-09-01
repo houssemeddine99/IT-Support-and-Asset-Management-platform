@@ -10,6 +10,7 @@ Public Partial Class AccountProfilePage
     Private ReadOnly _users As New UserRepository()
 
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
+        RequiredPasswordPanel.Visible = Convert.ToBoolean(If(Session("MustChangePassword"), False)) OrElse Request.QueryString("required") = "1"
         If Not IsPostBack Then LoadProfile()
     End Sub
 
