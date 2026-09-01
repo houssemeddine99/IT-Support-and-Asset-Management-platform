@@ -1,4 +1,5 @@
 Imports System.Data.SqlClient
+Imports System.Text
 Imports ITSupportAssetManagement.Web.Data
 Imports ITSupportAssetManagement.Web.Models
 
@@ -50,5 +51,53 @@ Public Partial Class HomePage
 
     Protected Function DisplayAssignee(value As Object) As String
         Dim name = Convert.ToString(value) : Return If(String.IsNullOrWhiteSpace(name), "Unassigned", name)
+    End Function
+
+    Protected Sub ExportButton_Click(sender As Object, e As EventArgs) Handles ExportButton.Click
+        Try
+            Dim snapshot As DashboardSnapshot = New DashboardRepository().GetSnapshot()
+            Dim csv As New StringBuilder()
+            csv.AppendLine("Siliana IT Hub Dashboard Report")
+            csv.AppendLine("Generated," & DateTime.Now.ToString("yyyy-MM-dd HH:mm"))
+            csv.AppendLine()
+            csv.AppendLine("Indicator,Value")
+            csv.AppendLine("Open tickets," & snapshot.OpenTickets.ToString())
+            csv.AppendLine("High-priority attention," & snapshot.AttentionTickets.ToString())
+            csv.AppendLine("Total assets," & snapshot.TotalAssets.ToString())
+            csv.AppendLine("Assigned assets," & snapshot.AssignedAssets.ToString())
+            csv.AppendLine("Assets in maintenance," & snapshot.AssetsInMaintenance.ToString())
+            csv.AppendLine("Overdue interventions," & snapshot.OverdueMaintenance.ToString())
+            csv.AppendLine("Average resolution hours," & snapshot.AverageResolutionHours.ToString(Globalization.CultureInfo.InvariantCulture))
+            csv.AppendLine("Healthy assets," & snapshot.HealthyAssets.ToString())
+            csv.AppendLine("Assets needing attention," & snapshot.NeedsAttentionAssets.ToString())
+            csv.AppendLine()
+            csv.AppendLine("Priority tickets")
+            csv.AppendLine("Ticket,Title,Priority,Category,Assignee,Created")
+            For Each ticket As DashboardPriorityTicket In snapshot.PriorityTickets
+                csv.AppendLine(String.Join(",", EscapeCsv(ticket.TicketNumber), EscapeCsv(ticket.Title), EscapeCsv(ticket.Priority), EscapeCsv(ticket.CategoryName), EscapeCsv(DisplayAssignee(ticket.AssignedToName)), EscapeCsv(ticket.CreatedAtUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm"))))
+            Next
+            csv.AppendLine()
+            csv.AppendLine("Recent activity")
+            csv.AppendLine("Type,Event,Detail,Date")
+            For Each activity As DashboardActivityItem In snapshot.RecentActivities
+                csv.AppendLine(String.Join(",", EscapeCsv(activity.ActivityType), EscapeCsv(activity.Title), EscapeCsv(activity.Detail), EscapeCsv(activity.EventAtUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm"))))
+            Next
+
+            Response.Clear()
+            Response.ContentType = "text/csv"
+            Response.ContentEncoding = Encoding.UTF8
+            Response.AddHeader("Content-Disposition", "attachment; filename=Siliana-Dashboard-" & DateTime.Now.ToString("yyyyMMdd-HHmm") & ".csv")
+            Response.Write(ChrW(&HFEFF) & csv.ToString())
+            Response.Flush()
+            HttpContext.Current.ApplicationInstance.CompleteRequest()
+        Catch ex As SqlException
+            ExportButton.Enabled = False
+            ExportButton.Text = "Export unavailable"
+        End Try
+    End Sub
+
+    Private Shared Function EscapeCsv(value As String) As String
+        Dim safeValue As String = If(value, String.Empty)
+        Return """" & safeValue.Replace("""", """""") & """"
     End Function
 End Class

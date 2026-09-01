@@ -5,6 +5,7 @@ Partial Public Class HomePage
     Protected WithEvents GreetingText As Global.System.Web.UI.WebControls.Literal
     Protected WithEvents CurrentDateText As Global.System.Web.UI.WebControls.Literal
     Protected WithEvents ShiftText As Global.System.Web.UI.WebControls.Literal
+    Protected WithEvents ExportButton As Global.System.Web.UI.WebControls.LinkButton
     Protected WithEvents OpenTicketsText As Global.System.Web.UI.WebControls.Literal
     Protected WithEvents AttentionTicketsText As Global.System.Web.UI.WebControls.Literal
     Protected WithEvents TotalAssetsText As Global.System.Web.UI.WebControls.Literal
