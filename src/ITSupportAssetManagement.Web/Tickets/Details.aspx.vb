@@ -1,4 +1,5 @@
 Imports System.Data.SqlClient
+Imports System.IO
 Imports System.Linq
 Imports ITSupportAssetManagement.Web.Data
 
@@ -25,6 +26,7 @@ Public Partial Class TicketDetailsPage
                 TechnicianInput.DataSource = _tickets.GetAssignableTechnicians() : TechnicianInput.DataTextField = "Label" : TechnicianInput.DataValueField = "Id" : TechnicianInput.DataBind() : TechnicianInput.Items.Insert(0, New ListItem("Select technician", String.Empty)) : StatusInput.SelectedValue = ticket.Status
             End If
             Dim comments = _tickets.GetComments(ticketId, canManage) : CommentRepeater.DataSource = comments : CommentRepeater.DataBind() : NoCommentsPanel.Visible = comments.Count = 0
+            Dim attachments = _tickets.GetAttachments(ticketId, userId, canManage) : AttachmentRepeater.DataSource = attachments : AttachmentRepeater.DataBind() : NoAttachmentsPanel.Visible = attachments.Count = 0
             If Request.QueryString("updated") = "1" Then SuccessPanel.Visible = True
             DetailsPanel.Visible = True
         Catch ex As SqlException
@@ -49,6 +51,22 @@ Public Partial Class TicketDetailsPage
             ShowError("The comment could not be saved.")
         End Try
     End Sub
+    Protected Sub UploadButton_Click(sender As Object, e As EventArgs) Handles UploadButton.Click
+        Dim userId As Integer : If Not Integer.TryParse(Convert.ToString(Session("UserId")), userId) Then Return
+        If Not AttachmentInput.HasFile Then ShowError("Choose a file to upload.") : Return
+        Dim safeName = Path.GetFileName(AttachmentInput.FileName), extension = Path.GetExtension(safeName).ToLowerInvariant()
+        Dim allowed = New String() {".png", ".jpg", ".jpeg", ".pdf", ".txt", ".log", ".docx", ".xlsx"}
+        If String.IsNullOrWhiteSpace(safeName) OrElse Not allowed.Contains(extension) Then ShowError("Allowed files: PNG, JPG, PDF, TXT, LOG, DOCX, and XLSX.") : Return
+        If AttachmentInput.PostedFile.ContentLength <= 0 OrElse AttachmentInput.PostedFile.ContentLength > 5242880 Then ShowError("The file must be no larger than 5 MB.") : Return
+        Dim role = Convert.ToString(Session("RoleName")), canManage = IsStaff(role), contentType = AttachmentInput.PostedFile.ContentType
+        If String.IsNullOrWhiteSpace(contentType) OrElse contentType.Length > 120 Then contentType = "application/octet-stream"
+        Try
+            _tickets.AddAttachment(GetTicketId(), userId, canManage, safeName, contentType, AttachmentInput.FileBytes)
+            Response.Redirect("~/Tickets/Details.aspx?id=" & GetTicketId().ToString() & "&updated=1", False)
+        Catch ex As Exception When TypeOf ex Is SqlException OrElse TypeOf ex Is InvalidOperationException
+            ShowError("The attachment could not be uploaded.")
+        End Try
+    End Sub
     Private Sub ExecuteUpdate(action As Action)
         Try
             action() : Response.Redirect("~/Tickets/Details.aspx?id=" & GetTicketId().ToString() & "&updated=1", False)
@@ -64,6 +82,14 @@ Public Partial Class TicketDetailsPage
     End Function
     Protected Function FormatCommentDate(value As Object) As String
         Return DirectCast(value, DateTime).ToLocalTime().ToString("dd MMM yyyy, HH:mm")
+    End Function
+    Protected Shared Function GetAttachmentIcon(value As Object) As String
+        Dim extension = Path.GetExtension(Convert.ToString(value)).ToLowerInvariant()
+        If extension = ".png" OrElse extension = ".jpg" OrElse extension = ".jpeg" Then Return "bi bi-file-earmark-image"
+        If extension = ".pdf" Then Return "bi bi-file-earmark-pdf"
+        If extension = ".docx" Then Return "bi bi-file-earmark-word"
+        If extension = ".xlsx" Then Return "bi bi-file-earmark-excel"
+        Return "bi bi-file-earmark-text"
     End Function
     Private Sub ShowError(message As String)
         ErrorMessage.Text = Server.HtmlEncode(message) : ErrorPanel.Visible = True

@@ -130,6 +130,42 @@ Namespace Data
             Return results
         End Function
 
+        Public Function GetAttachments(ticketId As Integer, viewerUserId As Integer, canViewAll As Boolean) As List(Of TicketAttachmentItem)
+            Const sql = "SELECT a.TicketAttachmentId,a.FileName,a.ContentType,a.FileSizeBytes,u.FirstName+N' '+u.LastName UploadedByName,a.CreatedAtUtc FROM dbo.TicketAttachments a INNER JOIN dbo.Tickets t ON t.TicketId=a.TicketId INNER JOIN dbo.Users u ON u.UserId=a.UploadedByUserId WHERE a.TicketId=@TicketId AND (@CanViewAll=1 OR t.RequestedByUserId=@UserId) ORDER BY a.CreatedAtUtc DESC;"
+            Dim results As New List(Of TicketAttachmentItem)()
+            Using connection = Database.CreateConnection(), command As New SqlCommand(sql, connection)
+                command.Parameters.Add("@TicketId", SqlDbType.Int).Value = ticketId : command.Parameters.Add("@UserId", SqlDbType.Int).Value = viewerUserId : command.Parameters.Add("@CanViewAll", SqlDbType.Bit).Value = canViewAll : connection.Open()
+                Using reader = command.ExecuteReader()
+                    While reader.Read()
+                        results.Add(New TicketAttachmentItem With {.TicketAttachmentId = reader.GetInt32(0), .FileName = reader.GetString(1), .ContentType = reader.GetString(2), .FileSizeBytes = reader.GetInt32(3), .UploadedByName = reader.GetString(4), .CreatedAtUtc = reader.GetDateTime(5)})
+                    End While
+                End Using
+            End Using
+            Return results
+        End Function
+
+        Public Function GetAttachment(attachmentId As Integer, viewerUserId As Integer, canViewAll As Boolean) As TicketAttachmentItem
+            Const sql = "SELECT a.FileName,a.ContentType,a.FileSizeBytes,a.FileContent FROM dbo.TicketAttachments a INNER JOIN dbo.Tickets t ON t.TicketId=a.TicketId WHERE a.TicketAttachmentId=@Id AND (@CanViewAll=1 OR t.RequestedByUserId=@UserId);"
+            Using connection = Database.CreateConnection(), command As New SqlCommand(sql, connection)
+                command.Parameters.Add("@Id", SqlDbType.Int).Value = attachmentId : command.Parameters.Add("@UserId", SqlDbType.Int).Value = viewerUserId : command.Parameters.Add("@CanViewAll", SqlDbType.Bit).Value = canViewAll : connection.Open()
+                Using reader = command.ExecuteReader(CommandBehavior.SingleRow)
+                    If Not reader.Read() Then Return Nothing
+                    Return New TicketAttachmentItem With {.FileName = reader.GetString(0), .ContentType = reader.GetString(1), .FileSizeBytes = reader.GetInt32(2), .FileContent = DirectCast(reader(3), Byte())}
+                End Using
+            End Using
+        End Function
+
+        Public Sub AddAttachment(ticketId As Integer, userId As Integer, canViewAll As Boolean, fileName As String, contentType As String, content As Byte())
+            If content Is Nothing OrElse content.Length = 0 OrElse content.Length > 5242880 Then Throw New InvalidOperationException("Choose a file between 1 byte and 5 MB.")
+            Const sql = "IF NOT EXISTS(SELECT 1 FROM dbo.Tickets WHERE TicketId=@TicketId AND (@CanViewAll=1 OR RequestedByUserId=@UserId)) THROW 51000,'Ticket not found.',1; INSERT dbo.TicketAttachments(TicketId,UploadedByUserId,FileName,ContentType,FileSizeBytes,FileContent) VALUES(@TicketId,@UserId,@FileName,@ContentType,@Size,@Content);"
+            Using connection = Database.CreateConnection(), command As New SqlCommand(sql, connection)
+                command.Parameters.Add("@TicketId", SqlDbType.Int).Value = ticketId : command.Parameters.Add("@UserId", SqlDbType.Int).Value = userId : command.Parameters.Add("@CanViewAll", SqlDbType.Bit).Value = canViewAll
+                command.Parameters.Add("@FileName", SqlDbType.NVarChar, 255).Value = fileName : command.Parameters.Add("@ContentType", SqlDbType.NVarChar, 120).Value = contentType
+                command.Parameters.Add("@Size", SqlDbType.Int).Value = content.Length : command.Parameters.Add("@Content", SqlDbType.VarBinary, -1).Value = content
+                connection.Open() : command.ExecuteNonQuery()
+            End Using
+        End Sub
+
         Public Sub AssignTicket(ticketId As Integer, technicianUserId As Integer)
             Const sql = "UPDATE dbo.Tickets SET AssignedToUserId=@UserId,Status=CASE WHEN Status=N'Open' THEN N'Assigned' ELSE Status END,UpdatedAtUtc=SYSUTCDATETIME() WHERE TicketId=@TicketId; IF @@ROWCOUNT=0 THROW 51000,'Ticket not found.',1;"
             Using connection = Database.CreateConnection(), command As New SqlCommand(sql, connection)

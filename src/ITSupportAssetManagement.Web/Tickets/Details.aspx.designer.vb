@@ -11,6 +11,10 @@ Partial Public Class TicketDetailsPage
     Protected WithEvents TicketNumber As Global.System.Web.UI.WebControls.Literal
     Protected WithEvents CreatedDate As Global.System.Web.UI.WebControls.Literal
     Protected WithEvents DescriptionText As Global.System.Web.UI.WebControls.Literal
+    Protected WithEvents AttachmentRepeater As Global.System.Web.UI.WebControls.Repeater
+    Protected WithEvents NoAttachmentsPanel As Global.System.Web.UI.WebControls.Panel
+    Protected WithEvents AttachmentInput As Global.System.Web.UI.WebControls.FileUpload
+    Protected WithEvents UploadButton As Global.System.Web.UI.WebControls.Button
     Protected WithEvents CommentRepeater As Global.System.Web.UI.WebControls.Repeater
     Protected WithEvents NoCommentsPanel As Global.System.Web.UI.WebControls.Panel
     Protected WithEvents CommentInput As Global.System.Web.UI.WebControls.TextBox

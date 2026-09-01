@@ -113,6 +113,7 @@
     <Compile Include="Models\TeamMemberListItem.vb" />
     <Compile Include="Models\TicketDetails.vb" />
     <Compile Include="Models\TicketCommentItem.vb" />
+    <Compile Include="Models\TicketAttachmentItem.vb" />
     <Compile Include="Models\CategorySettingItem.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="Site.Master.vb">
@@ -136,6 +137,8 @@
     <Compile Include="Assets\List.aspx.designer.vb"><DependentUpon>List.aspx</DependentUpon></Compile>
     <Compile Include="Tickets\Create.aspx.vb"><DependentUpon>Create.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
     <Compile Include="Tickets\Create.aspx.designer.vb"><DependentUpon>Create.aspx</DependentUpon></Compile>
+    <Compile Include="Tickets\Attachment.aspx.vb"><DependentUpon>Attachment.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
+    <Compile Include="Tickets\Attachment.aspx.designer.vb"><DependentUpon>Attachment.aspx</DependentUpon></Compile>
     <Compile Include="Tickets\Details.aspx.vb"><DependentUpon>Details.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
     <Compile Include="Tickets\Details.aspx.designer.vb"><DependentUpon>Details.aspx</DependentUpon></Compile>
     <Compile Include="Tickets\List.aspx.vb"><DependentUpon>List.aspx</DependentUpon><SubType>ASPXCodeBehind</SubType></Compile>
