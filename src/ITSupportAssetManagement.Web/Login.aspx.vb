@@ -9,20 +9,15 @@ Public Partial Class LoginPage
     Protected Sub Page_Load(sender As Object, e As EventArgs) Handles Me.Load
         If Request.IsAuthenticated Then Response.Redirect("~/Default.aspx", False)
         If Not IsPostBack Then
-            Try
-                If Not New UserRepository().AnyUsers() Then Response.Redirect("~/SetupAdmin.aspx", False)
-            Catch ex As SqlException
-                SqlConnection.ClearAllPools()
-                Try
-                    If Not New UserRepository().AnyUsers() Then Response.Redirect("~/SetupAdmin.aspx", False)
-                Catch retryException As SqlException
-                    If Request.IsLocal Then
-                        ShowError(String.Format("Database connection failed ({0}): {1}", retryException.Number, retryException.Message))
-                    Else
-                        ShowError("The database service is temporarily unavailable. Contact IT support.")
-                    End If
-                End Try
-            End Try
+            Dim anyUsers As Boolean = False
+            Dim databaseError As SqlException = Nothing
+            If TryReadUserState(anyUsers, databaseError) Then
+                If Not anyUsers Then Response.Redirect("~/SetupAdmin.aspx", False)
+            ElseIf Request.IsLocal Then
+                ShowError(String.Format("Database connection failed ({0}): {1}", databaseError.Number, databaseError.Message))
+            Else
+                ShowError("The database service is temporarily unavailable. Contact IT support.")
+            End If
         End If
     End Sub
 
@@ -49,4 +44,19 @@ Public Partial Class LoginPage
         ErrorMessage.Text = Server.HtmlEncode(message)
         ErrorPanel.Visible = True
     End Sub
+
+    Private Shared Function TryReadUserState(ByRef anyUsers As Boolean, ByRef databaseError As SqlException) As Boolean
+        For attempt As Integer = 1 To 3
+            Try
+                anyUsers = New UserRepository().AnyUsers()
+                databaseError = Nothing
+                Return True
+            Catch ex As SqlException
+                databaseError = ex
+                SqlConnection.ClearAllPools()
+                If attempt < 3 Then Threading.Thread.Sleep(attempt * 750)
+            End Try
+        Next
+        Return False
+    End Function
 End Class
