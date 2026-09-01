@@ -1,0 +1,14 @@
+name: VB.NET build verification
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: microsoft/setup-msbuild@v2
+      - name: Build solution
+        shell: powershell
+        run: msbuild ITSupportAssetManagement.sln /t:Build /p:Configuration=Release /m
