@@ -32,3 +32,6 @@
 .auth-form-panel{padding:0 clamp(36px,7vw,110px) !important}
 
 @media(prefers-reduced-motion:reduce){.auth-button,.primary-button{transition:none}}
+
+/* Hide ASP.NET runtime hidden container (VIEWSTATE / hidden inputs) shown in browser tools */
+div.aspNetHidden{display:none !important}
